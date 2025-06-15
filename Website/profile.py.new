@@ -1,0 +1,365 @@
+import os
+import json
+import datetime
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+
+profile_bp = Blueprint("profile", __name__, template_folder="templates")
+
+PROFILE_FILE = "database/profile.json"
+UPLOAD_FOLDER = "uploads"
+
+# Ensure the upload folder exists
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+def load_profile():
+    """Load profile data from the JSON file."""
+    if not os.path.exists(PROFILE_FILE):
+        return {}
+    with open(PROFILE_FILE, "r") as f:
+        try:
+            return json.load(f)
+        except json.JSONDecodeError:
+            return {}
+
+def save_profile(data):
+    """Save the profile data to the JSON file."""
+    with open(PROFILE_FILE, "w") as f:
+        json.dump(data, f, indent=4)
+
+def generate_new_id(items_list):
+    """Generate a unique integer ID based on the highest existing ID."""
+    if not items_list:
+        return 1
+    max_id = max(item.get("id", 0) for item in items_list)
+    return max_id + 1
+
+
+@profile_bp.route("/profile", methods=["GET", "POST"])
+def profile():
+    if request.method == "POST":
+        # Load existing data so dynamic arrays remain intact
+        profile_data = load_profile()
+
+        # Update the basic info
+        profile_data["first_name"] = request.form.get("first_name", "").strip()
+        profile_data["middle_name"] = request.form.get("middle_name", "").strip()
+        profile_data["last_name"] = request.form.get("last_name", "").strip()
+        profile_data["email"] = request.form.get("email", "").strip()
+        profile_data["phone"] = request.form.get("phone", "").strip()
+        profile_data["address"] = request.form.get("address", "").strip()
+        profile_data["birth_date"] = request.form.get("birth_date", "").strip()
+
+        # For your convenience: store skills & languages in the same request
+        profile_data["skills"] = request.form.get("skills", "").strip()
+        profile_data["languages"] = request.form.get("languages", "").strip()
+
+        # Initialize arrays if not present
+        if "work_experiences" not in profile_data:
+            profile_data["work_experiences"] = []
+        if "academic_experiences" not in profile_data:
+            profile_data["academic_experiences"] = []
+        if "educations" not in profile_data:
+            profile_data["educations"] = []
+        if "publications" not in profile_data:
+            profile_data["publications"] = []
+        if "projects" not in profile_data:
+            profile_data["projects"] = []
+        if "social_urls" not in profile_data:
+            profile_data["social_urls"] = []
+
+        # Handle file uploads
+        if "profile_pic" in request.files:
+            file = request.files["profile_pic"]
+            if file and file.filename:
+                filename = (
+                    "profile_pic_"
+                    + datetime.datetime.now().strftime("%Y%m%d%H%M%S_")
+                    + file.filename
+                )
+                filepath = os.path.join(UPLOAD_FOLDER, filename)
+                file.save(filepath)
+                profile_data["profile_pic"] = filename
+
+        if "resume_file" in request.files:
+            file = request.files["resume_file"]
+            if file and file.filename:
+                filename = (
+                    "resume_"
+                    + datetime.datetime.now().strftime("%Y%m%d%H%M%S_")
+                    + file.filename
+                )
+                filepath = os.path.join(UPLOAD_FOLDER, filename)
+                file.save(filepath)
+                profile_data["resume_file"] = filename
+
+        profile_data["last_update"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        save_profile(profile_data)
+        flash("Profile updated successfully!")
+        return redirect(url_for("profile.profile"))
+    else:
+        data = load_profile()
+        return render_template("profile.html", profile=data)
+
+
+@profile_bp.route("/profile/add_work_experience", methods=["POST"])
+def add_work_experience():
+    profile_data = load_profile()
+    if "work_experiences" not in profile_data:
+        profile_data["work_experiences"] = []
+
+    new_experience = {
+        "id": generate_new_id(profile_data["work_experiences"]),
+        "company": request.form.get("company", "").strip(),
+        "location": request.form.get("location", "").strip(),
+        "position_title": request.form.get("position_title", "").strip(),
+        "experience_type": request.form.get("experience_type", "").strip(),
+        "start_month": request.form.get("start_month", "").strip(),
+        "start_year": request.form.get("start_year", "").strip(),
+        "end_month": request.form.get("end_month", "").strip(),
+        "end_year": request.form.get("end_year", "").strip(),
+        "currently_work_here": request.form.get("currently_work_here") == "on",
+        "description": request.form.get("description", "").strip(),
+    }
+
+    profile_data["work_experiences"].append(new_experience)
+    profile_data["last_update"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    save_profile(profile_data)
+    flash("Work experience added!")
+    return redirect(url_for("profile.profile"))
+
+
+@profile_bp.route("/profile/edit_work_experience", methods=["POST"])
+def edit_work_experience():
+    """Update an existing work experience by ID."""
+    profile_data = load_profile()
+    wexp_id_str = request.form.get("wexp_id", "")
+    try:
+        wexp_id = int(wexp_id_str)
+    except ValueError:
+        flash("Invalid Work Experience ID.")
+        return redirect(url_for("profile.profile"))
+
+    # Ensure the array exists
+    if "work_experiences" not in profile_data:
+        profile_data["work_experiences"] = []
+
+    # Find and update the matching item
+    for wexp in profile_data["work_experiences"]:
+        if wexp.get("id") == wexp_id:
+            wexp["company"] = request.form.get("company", "").strip()
+            wexp["location"] = request.form.get("location", "").strip()
+            wexp["position_title"] = request.form.get("position_title", "").strip()
+            wexp["experience_type"] = request.form.get("experience_type", "").strip()
+            wexp["start_month"] = request.form.get("start_month", "").strip()
+            wexp["start_year"] = request.form.get("start_year", "").strip()
+            wexp["end_month"] = request.form.get("end_month", "").strip()
+            wexp["end_year"] = request.form.get("end_year", "").strip()
+            wexp["currently_work_here"] = (request.form.get("currently_work_here") == "on")
+            wexp["description"] = request.form.get("description", "").strip()
+
+            profile_data["last_update"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            save_profile(profile_data)
+            flash("Work experience updated!")
+            break
+    else:
+        flash("Work experience not found.")
+
+    return redirect(url_for("profile.profile"))
+
+
+@profile_bp.route("/profile/delete_work_experience/<int:wexp_id>", methods=["POST"])
+def delete_work_experience(wexp_id):
+    """Delete an existing work experience by ID."""
+    profile_data = load_profile()
+    if "work_experiences" not in profile_data:
+        profile_data["work_experiences"] = []
+
+    old_count = len(profile_data["work_experiences"])
+    profile_data["work_experiences"] = [
+        w for w in profile_data["work_experiences"] if w.get("id") != wexp_id
+    ]
+    new_count = len(profile_data["work_experiences"])
+
+    if new_count < old_count:
+        profile_data["last_update"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        save_profile(profile_data)
+        flash("Work experience deleted!")
+    else:
+        flash("Work experience not found.")
+
+    return redirect(url_for("profile.profile"))
+
+
+@profile_bp.route("/profile/add_academic_experience", methods=["POST"])
+def add_academic_experience():
+    profile_data = load_profile()
+    if "academic_experiences" not in profile_data:
+        profile_data["academic_experiences"] = []
+
+    new_academic = {
+        "id": generate_new_id(profile_data["academic_experiences"]),
+        "company": request.form.get("company", "").strip(),
+        "location": request.form.get("location", "").strip(),
+        "position_title": request.form.get("position_title", "").strip(),
+        "experience_type": request.form.get("experience_type", "").strip(),
+        "start_month": request.form.get("start_month", "").strip(),
+        "start_year": request.form.get("start_year", "").strip(),
+        "end_month": request.form.get("end_month", "").strip(),
+        "end_year": request.form.get("end_year", "").strip(),
+        "currently_work_here": (request.form.get("currently_work_here") == "on"),
+        "description": request.form.get("description", "").strip(),
+    }
+
+    profile_data["academic_experiences"].append(new_academic)
+    profile_data["last_update"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    save_profile(profile_data)
+    flash("Academic experience added!")
+    return redirect(url_for("profile.profile"))
+
+
+@profile_bp.route("/profile/edit_academic_experience", methods=["POST"])
+def edit_academic_experience():
+    """Update an existing academic experience by ID."""
+    profile_data = load_profile()
+    aexp_id_str = request.form.get("aexp_id", "")
+    try:
+        aexp_id = int(aexp_id_str)
+    except ValueError:
+        flash("Invalid Academic Experience ID.")
+        return redirect(url_for("profile.profile"))
+
+    if "academic_experiences" not in profile_data:
+        profile_data["academic_experiences"] = []
+
+    for aexp in profile_data["academic_experiences"]:
+        if aexp.get("id") == aexp_id:
+            aexp["company"] = request.form.get("company", "").strip()
+            aexp["location"] = request.form.get("location", "").strip()
+            aexp["position_title"] = request.form.get("position_title", "").strip()
+            aexp["experience_type"] = request.form.get("experience_type", "").strip()
+            aexp["start_month"] = request.form.get("start_month", "").strip()
+            aexp["start_year"] = request.form.get("start_year", "").strip()
+            aexp["end_month"] = request.form.get("end_month", "").strip()
+            aexp["end_year"] = request.form.get("end_year", "").strip()
+            aexp["currently_work_here"] = (request.form.get("currently_work_here") == "on")
+            aexp["description"] = request.form.get("description", "").strip()
+
+            profile_data["last_update"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            save_profile(profile_data)
+            flash("Academic experience updated!")
+            break
+    else:
+        flash("Academic experience not found.")
+
+    return redirect(url_for("profile.profile"))
+
+
+@profile_bp.route("/profile/delete_academic_experience/<int:aexp_id>", methods=["POST"])
+def delete_academic_experience(aexp_id):
+    """Delete an existing academic experience by ID."""
+    profile_data = load_profile()
+    if "academic_experiences" not in profile_data:
+        profile_data["academic_experiences"] = []
+
+    old_count = len(profile_data["academic_experiences"])
+    profile_data["academic_experiences"] = [
+        a for a in profile_data["academic_experiences"] if a.get("id") != aexp_id
+    ]
+    new_count = len(profile_data["academic_experiences"])
+
+    if new_count < old_count:
+        profile_data["last_update"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        save_profile(profile_data)
+        flash("Academic experience deleted!")
+    else:
+        flash("Academic experience not found.")
+
+    return redirect(url_for("profile.profile"))
+
+
+@profile_bp.route("/profile/add_education", methods=["POST"])
+def add_education():
+    profile_data = load_profile()
+    if "educations" not in profile_data:
+        profile_data["educations"] = []
+
+    new_edu = {
+        "id": generate_new_id(profile_data["educations"]),
+        "school_name": request.form.get("school_name", "").strip(),
+        "new_school_name": request.form.get("new_school_name", "").strip(),
+        "major": request.form.get("major", "").strip(),
+        "degree_type": request.form.get("degree_type", "").strip(),
+        "gpa": request.form.get("gpa", "").strip(),
+        "start_month": request.form.get("start_month", "").strip(),
+        "start_year": request.form.get("start_year", "").strip(),
+        "end_month": request.form.get("end_month", "").strip(),
+        "end_year": request.form.get("end_year", "").strip(),
+    }
+
+    profile_data["educations"].append(new_edu)
+    profile_data["last_update"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    save_profile(profile_data)
+    flash("Education added!")
+    return redirect(url_for("profile.profile"))
+
+
+@profile_bp.route("/profile/edit_education", methods=["POST"])
+def edit_education():
+    """Update an existing education by ID."""
+    profile_data = load_profile()
+    edu_id_str = request.form.get("edu_id", "")
+    try:
+        edu_id = int(edu_id_str)
+    except ValueError:
+        flash("Invalid Education ID.")
+        return redirect(url_for("profile.profile"))
+
+    if "educations" not in profile_data:
+        profile_data["educations"] = []
+
+    for edu in profile_data["educations"]:
+        if edu.get("id") == edu_id:
+            edu["school_name"] = request.form.get("school_name", "").strip()
+            edu["new_school_name"] = request.form.get("new_school_name", "").strip()
+            edu["major"] = request.form.get("major", "").strip()
+            edu["degree_type"] = request.form.get("degree_type", "").strip()
+            edu["gpa"] = request.form.get("gpa", "").strip()
+            edu["start_month"] = request.form.get("start_month", "").strip()
+            edu["start_year"] = request.form.get("start_year", "").strip()
+            edu["end_month"] = request.form.get("end_month", "").strip()
+            edu["end_year"] = request.form.get("end_year", "").strip()
+
+            profile_data["last_update"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            save_profile(profile_data)
+            flash("Education updated!")
+            break
+    else:
+        flash("Education not found.")
+
+    return redirect(url_for("profile.profile"))
+
+
+@profile_bp.route("/profile/delete_education/<int:edu_id>", methods=["POST"])
+def delete_education(edu_id):
+    """Delete an existing education by ID."""
+    profile_data = load_profile()
+    if "educations" not in profile_data:
+        profile_data["educations"] = []
+
+    old_count = len(profile_data["educations"])
+    profile_data["educations"] = [
+        e for e in profile_data["educations"] if e.get("id") != edu_id
+    ]
+    new_count = len(profile_data["educations"])
+
+    if new_count < old_count:
+        profile_data["last_update"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        save_profile(profile_data)
+        flash("Education deleted!")
+    else:
+        flash("Education not found.")
+
+    return redirect(url_for("profile.profile"))
+
+

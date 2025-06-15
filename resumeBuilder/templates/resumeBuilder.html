@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Resume Editor</title>
+  <style>
+    body { font-family: sans-serif; padding: 1rem; }
+    .section { margin-bottom: 2rem; }
+    .section > h2 { border-bottom: 2px solid #666; padding-bottom: 0.2rem; }
+    .subsection { margin-left: 1rem; margin-top: 1rem; }
+    .subsection > h3 { margin-bottom: 0.2rem; }
+    .editable {
+      border: 1px dashed #ccc;
+      padding: 0.5rem;
+      min-height: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .suggestion { background: #f9f9f9; }
+  </style>
+</head>
+<body>
+
+  <h1>Interactive Resume Editor</h1>
+
+  <label for="job-desc-input">Job Description:</label><br>
+  <textarea id="job-desc-input" rows="6" cols="80"
+            placeholder="Paste job description…"></textarea><br>
+  <button id="suggest-btn">Get Suggestions</button>
+
+  <div id="resume-container"></div>
+
+  <script>
+    // --- 0) Your resumeData (replace with your real data or fetch it) ---
+    window.resumeData = {
+      "sections": [
+        {
+          "title": "Experience",
+          "subsections": [
+            {
+              "title": "Senior Data Scientist at Acme Corp (2022–Present)",
+              "content": "• Led development of graph-based ML pipelines.\n• Improved model accuracy by 12% on TMA dataset."
+            },
+            {
+              "title": "Machine Learning Researcher at DataLabs (2020–2022)",
+              "content": "• Designed GNN architectures for histopathology images.\n• Published two conference papers."
+            }
+          ]
+        },
+        {
+          "title": "Education",
+          "subsections": [
+            {
+              "title": "PhD in Computer Science, Old Dominion University",
+              "content": "Dissertation on long-tailed image classification."
+            }
+          ]
+        }
+      ]
+    };
+
+    // This map will hold references to each suggestion <div>
+    let suggestionMap = {};
+
+    // --- 1) Render function that builds the DOM and populates suggestionMap ---
+    function renderResume(data) {
+      const container = document.getElementById("resume-container");
+      container.innerHTML = "";           // clear any existing
+      suggestionMap = {};                 // reset lookup
+
+      data.sections.forEach(section => {
+        const secDiv = document.createElement("div");
+        secDiv.className = "section";
+
+        // Section heading
+        const secH2 = document.createElement("h2");
+        secH2.textContent = section.title;
+        secDiv.appendChild(secH2);
+
+        // Subsections
+        section.subsections.forEach(sub => {
+          const subDiv = document.createElement("div");
+          subDiv.className = "subsection";
+
+          const subH3 = document.createElement("h3");
+          subH3.textContent = sub.title;
+          subDiv.appendChild(subH3);
+
+          // Editable resume content
+          const contentDiv = document.createElement("div");
+          contentDiv.className = "editable";
+          contentDiv.contentEditable = "true";
+          contentDiv.textContent = sub.content;
+          subDiv.appendChild(contentDiv);
+
+          // Editable suggestion box
+          const suggDiv = document.createElement("div");
+          suggDiv.className = "editable suggestion";
+          suggDiv.contentEditable = "true";
+          // create a stable key to look up this div later
+          const key = `${section.title}|||${sub.title}`;
+          suggDiv.dataset.key = key;
+          suggestionMap[key] = suggDiv;
+
+          subDiv.appendChild(suggDiv);
+          secDiv.appendChild(subDiv);
+        });
+
+        container.appendChild(secDiv);
+      });
+    }
+
+    // --- 2) On button click, fetch suggestions and fill them in ---
+    document.getElementById("suggest-btn").addEventListener("click", async () => {
+      const jd = document.getElementById("job-desc-input").value;
+      const resp = await fetch("/api/suggestions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          resume: window.resumeData,
+          job_description: jd
+        })
+      });
+
+      if (!resp.ok) {
+        console.error("Server error:", await resp.text());
+        return;
+      }
+
+      const { existing = [], missing = [] } = await resp.json();
+
+      // merge both lists for iteration
+      const all = existing.concat(missing);
+      all.forEach(item => {
+        const key = `${item.section}|||${item.subsection}`;
+        const el = suggestionMap[key];
+        if (!el) {
+          console.warn("No suggestion box for", key);
+          return;
+        }
+        // render bullet points
+        el.innerHTML = (
+          "<ul>" +
+          item.suggestions.map(s => `<li>${s}</li>`).join("") +
+          "</ul>"
+        );
+      });
+    });
+
+    // --- 3) Initial render on page load ---
+    document.addEventListener("DOMContentLoaded", () => {
+      renderResume(window.resumeData);
+    });
+  </script>
+</body>
+</html>

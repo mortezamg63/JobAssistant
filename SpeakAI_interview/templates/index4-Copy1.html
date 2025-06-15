@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🎤 Voice Chat with Resume Upload</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- ✅ TailwindCSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white flex justify-center pt-10 min-h-screen">
+
+  <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-2xl flex flex-col h-[85vh]">
+    <h1 class="text-2xl font-bold text-center mb-4">🎤 Voice Chat Interview Assistant</h1>
+
+    <!-- Chatbox -->
+    <div id="chatbox" class="flex-grow overflow-y-auto bg-gray-700 p-4 rounded-lg mb-4"></div>
+
+    <!-- Resume Upload -->
+    <div class="mb-4">
+      <label for="resumeInput" class="block text-sm font-medium mb-1">📄 Upload Resume:</label>
+      <input type="file" id="resumeInput" accept=".pdf,.doc,.docx,.txt" class="w-full text-gray-900 p-2 rounded bg-white" />
+      <button id="uploadResumeBtn" class="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Upload Resume
+      </button>
+    </div>
+
+    <!-- Record Button -->
+    <div class="flex justify-center">
+      <button id="recordButton" class="bg-red-500 px-4 py-3 text-lg rounded-full hover:bg-red-600 w-full max-w-xs">
+        🎤 Hold to Record
+      </button>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    let mediaRecorder;
+    let audioChunks = [];
+    let lastAudioUrl = "";
+
+    const recordButton = document.getElementById("recordButton");
+    const uploadResumeBtn = document.getElementById("uploadResumeBtn");
+    const resumeInput = document.getElementById("resumeInput");
+
+    function startRecording() {
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.start();
+
+        recordButton.textContent = "🎙️ Recording...";
+        recordButton.classList.remove("bg-red-500");
+        recordButton.classList.add("bg-green-500");
+
+        mediaRecorder.ondataavailable = event => {
+          audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+          uploadAudio(audioBlob);
+          audioChunks = [];
+        };
+      }).catch(error => {
+        console.error("Error accessing microphone:", error);
+        alert("Error accessing microphone. Please check microphone permissions.");
+      });
+    }
+
+    function stopRecording() {
+      if (mediaRecorder) {
+        mediaRecorder.stop();
+        recordButton.textContent = "🎤 Hold to Record";
+        recordButton.classList.remove("bg-green-500");
+        recordButton.classList.add("bg-red-500");
+      }
+    }
+
+    function uploadAudio(audioBlob) {
+      const formData = new FormData();
+      formData.append("audio", audioBlob, "recorded_audio.wav");
+
+      fetch("/upload_audio", {
+        method: "POST",
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.audio_url && data.response_audio_url) {
+          lastAudioUrl = data.audio_url;
+          addAudioMessage(data.audio_url, data.response_audio_url, data.timestamp);
+        }
+      })
+      .catch(error => console.error("Error:", error));
+    }
+
+    function addAudioMessage(audioUrl, responseAudioUrl, timestamp) {
+      const chatbox = document.getElementById("chatbox");
+
+      const userMessage = document.createElement("div");
+      userMessage.classList.add("mb-2", "p-3", "bg-blue-500", "rounded-lg");
+
+      const userTime = document.createElement("span");
+      userTime.textContent = new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + " - You:";
+      userTime.classList.add("text-sm", "text-gray-200");
+
+      const userAudio = document.createElement("audio");
+      userAudio.controls = true;
+      userAudio.src = audioUrl;
+      userAudio.classList.add("w-full");
+
+      userMessage.appendChild(userTime);
+      userMessage.appendChild(userAudio);
+
+      const botMessage = document.createElement("div");
+      botMessage.classList.add("mb-2", "p-3", "bg-gray-600", "rounded-lg");
+
+      const botTime = document.createElement("span");
+      botTime.textContent = new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + " - Bot's Response:";
+      botTime.classList.add("text-sm", "text-gray-300");
+
+      const botAudio = document.createElement("audio");
+      botAudio.controls = true;
+      botAudio.src = responseAudioUrl;
+      botAudio.classList.add("w-full");
+
+      botMessage.appendChild(botTime);
+      botMessage.appendChild(botAudio);
+
+      chatbox.appendChild(userMessage);
+      chatbox.appendChild(botMessage);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function uploadResume() {
+      const file = resumeInput.files[0];
+      if (!file) {
+        alert("Please select a resume file.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("resume", file);
+
+      fetch("/upload_resume", {
+        method: "POST",
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert("✅ Resume uploaded successfully!");
+        } else {
+          alert("⚠️ " + data.error);
+        }
+      })
+      .catch(error => {
+        console.error("Resume upload error:", error);
+        alert("Failed to upload resume.");
+      });
+    }
+
+    uploadResumeBtn.addEventListener("click", uploadResume);
+    recordButton.addEventListener("mousedown", startRecording);
+    recordButton.addEventListener("mouseup", stopRecording);
+    recordButton.addEventListener("touchstart", startRecording);
+    recordButton.addEventListener("touchend", stopRecording);
+  </script>
+</body>
+</html>

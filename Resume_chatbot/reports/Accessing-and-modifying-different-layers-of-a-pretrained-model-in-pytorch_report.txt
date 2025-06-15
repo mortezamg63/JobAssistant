@@ -1,0 +1,1 @@
+The project provides notes and examples on handling layers of a pretrained model, specifically ResNet18, using PyTorch. It demonstrates how to access, print, and freeze parameters of specific layers in the model to prevent them from being retrained.

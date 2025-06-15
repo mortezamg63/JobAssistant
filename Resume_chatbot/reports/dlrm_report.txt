@@ -1,0 +1,17 @@
+The repository provides an extensive implementation of a Deep Learning Recommendation Model (DLRM) which is utilized in personalization and recommendation systems. The DLRM processes dense features, which are vectors of floating-point values, and sparse features, which are indices into embedding tables. These features are processed through multilayer perceptron (MLP) networks and operators like summation or dot products, generating outputs like click probabilities.
+
+The repository includes various code files aimed at data preprocessing, model implementation, and performance optimization. Key features include:
+
+- **Data Loading and Processing**: Scripts such as `data_loader_terabyte.py` and `data_utils.py` facilitate preprocessing of the Criteo datasets and converting categorical data into numerical formats. Other scripts like `cython_criteo.py` further optimize data processing using Cython to enhance performance efficiencies.
+
+- **Model Implementations**: Implementations using both PyTorch and Caffe2 frameworks are available (`dlrm_s_pytorch.py` and `dlrm_s_caffe2.py`). These scripts manage model inputs, MLP network processing, and interactions among vectors utilizing various operators.
+
+- **Benchmarking and Scripts**: The repository provides Bash scripts in the `bench` directory for running the models on specified datasets, with options for defining model parameters and logging outputs. The scripts like `bench/dlrm_s_criteo_kaggle.sh` and `bench/run_and_time.sh` offer flexibility in execution settings.
+
+- **Optimization Techniques**: Unique tricks for efficient embedding such as the Mixed-Dimensions Trick and Quotient-Remainder Embedding (`md_embedding_bag.py`, `qr_embedding_bag.py`) help reduce size and improve memory efficiency for embeddings, which is crucial for recommendation systems.
+
+- **Custom Optimizer**: A custom PyTorch optimizer `RWSAdagrad` is also included, which handles row-wise sparse gradients supporting specific optimization demands of recommendation models.
+
+- **Logging and Testing**: The `mlperf_logger.py` file manages logging in compliance with MLPerf standards, while `test/dlrm_s_test.sh` ensures robustness by validating outputs of the PyTorch and Caffe2 implementations.
+
+Overall, the repository is designed to provide comprehensive tools and scripts for implementing, testing, and optimizing deep learning recommendation models, with a focus on personalization and scalable deployment in recommendation systems.

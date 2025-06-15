@@ -1,0 +1,91 @@
+Final output (ResumeMatchOutput):
+    {
+      "existing": [
+        {
+          "section": "Experience",
+          "subsection": "Senior Data Scientist at Acme Corp (2022–Present)",
+          "category": "Technical Skills",
+          "keywords": [
+            "machine learning",
+            "model accuracy"
+          ],
+          "suggestions": [
+            "Emphasize experience with generative AI approaches.",
+            "Include any experience with NLP techniques."
+          ]
+        },
+        {
+          "section": "Experience",
+          "subsection": "Machine Learning Researcher at DataLabs (2020–2022)",
+          "category": "Technical Skills",
+          "keywords": [
+            "machine learning",
+            "deep learning",
+            "GNN architectures"
+          ],
+          "suggestions": [
+            "Add details about NLP application in your projects.",
+            "Mention any frameworks or libraries used (e.g., TensorFlow, Keras)."
+          ]
+        }
+      ],
+      "missing": [
+        {
+          "section": "Experience",
+          "subsection": "Senior Data Scientist at Acme Corp (2022–Present)",
+          "category": "Technical Skills",
+          "keywords": [
+            "natural language processing (NLP)",
+            "chatbot functionality",
+            "end-to-end solutions",
+            "API",
+            "front-end and back-end integration"
+          ],
+          "suggestions": [
+            "Highlight any relevant experience with NLP or chatbot technologies.",
+            "Include familiarity with tools like TensorFlow, Keras, and PyTorch."
+          ]
+        },
+        {
+          "section": "Experience",
+          "subsection": "Machine Learning Researcher at DataLabs (2020–2022)",
+          "category": "Technical Skills",
+          "keywords": [
+            "generative AI",
+            "Transformer-based models (BERT, GPT)",
+            "GANs",
+            "VAEs"
+          ],
+          "suggestions": [
+            "Mention any knowledge or experience with generative AI models.",
+            "Indicate any use of Transformer-based models or experience fine-tuning such models."
+          ]
+        },
+        {
+          "section": "Education",
+          "subsection": "PhD in Computer Science, Old Dominion University",
+          "category": "Domain Knowledge",
+          "keywords": [
+            "animal agriculture"
+          ],
+          "suggestions": [
+            "If applicable, add any background or coursework related to animal agriculture."
+          ]
+        },
+        {
+          "section": "Experience",
+          "subsection": "",
+          "category": "Soft Skills",
+          "keywords": [
+            "strong communication skills",
+            "problem-solving",
+            "analytical skills",
+            "organizational skills",
+            "team collaboration"
+          ],
+          "suggestions": [
+            "Incorporate soft skills related to team collaboration and problem-solving."
+          ]
+        }
+      ]
+    }

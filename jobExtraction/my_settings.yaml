@@ -1,0 +1,25 @@
+block_list_file: job_search_results/demo_block_list.json
+cache_folder: job_search_results/cache
+delay:
+  algorithm: LINEAR
+  converging: false
+  max_duration: 5.0
+  min_duration: 1.0
+  random: false
+duplicates_list_file: job_search_results/demo_duplicates_list.json
+log_file: job_search_results/log.log
+log_level: INFO
+master_csv_file: job_search_results/demo_search.csv
+search:
+  city: Virginia
+  company_block_list:
+  - Infox Consulting,sherrif
+  keywords:
+  - machine learning internship
+  locale: USA_ENGLISH
+  max_listing_days: 35
+  providers:
+  - INDEED
+  province_or_state: ''
+  radius: 25
+  remoteness: ANY

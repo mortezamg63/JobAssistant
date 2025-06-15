@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub AI Assistant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: #0b1c2f;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px;
+      color: #f5e9d7;
+    }
+
+    .dashboard {
+      display: flex;
+      gap: 40px;
+    }
+
+    .panel {
+      background: #101e33;
+      width: 680px;
+      padding: 32px;
+      border-radius: 24px;
+      border: 1.5px solid rgba(255, 215, 0, 0.25);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 16px;
+    }
+
+    .chat-icon {
+      width: 48px;
+      height: 48px;
+      background-color: #1e293b;
+      border-radius: 50%;
+      padding: 8px;
+    }
+
+    .chat-title {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: #f5e9d7;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      flex: 1;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid #425063;
+      background: #0f1a2a;
+      color: #f5e9d7;
+      font-size: 1rem;
+    }
+
+    input::placeholder {
+      color: #aaa;
+    }
+
+    button {
+      background: linear-gradient(135deg, #284466, #0c2a4d);
+      border: 1px solid #3c5774;
+      color: #f5e9d7;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 14px 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #3d6b97, #163b5e);
+    }
+
+    .chat-box {
+      background: #0d1827;
+      padding: 24px;
+      height: 420px;
+      overflow-y: auto;
+      border-radius: 18px;
+      font-size: 1.15rem;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .bot-msg {
+      background: #1a2a46;
+      color: #f5e9d7;
+      padding: 18px 24px;
+      border-radius: 16px;
+      box-shadow: 0 5px 14px rgba(0, 0, 0, 0.25);
+      max-width: 85%;
+      align-self: flex-start;
+    }
+
+    .repo-summary-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #ffe082;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Single Repo Panel -->
+    <div class="panel">
+      <div class="chat-header">
+        <img src="/static/github-icon.png" class="chat-icon" alt="GitHub Icon" />
+        <span class="chat-title">GitHub Repo Summarizer</span>
+      </div>
+      <form id="repo-form" class="input-group" action="/summarize" method="POST">
+        <input type="text" name="repo_url" placeholder="e.g. mortezamg63/YOLO-Object-Detecton" required />
+        <button type="submit">SUMMARIZE</button>
+      </form>
+      <div class="chat-box">
+        {% if summary %}
+          <div class="bot-msg">{{ summary }}</div>
+        {% elif error %}
+          <div class="bot-msg">⚠️ {{ error }}</div>
+        {% else %}
+          <div class="bot-msg">Hey there! I’m Mory’s digital twin 🧠<br>Trained to summarize GitHub projects. Paste a repo to begin!</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- GitHub Account Panel -->
+    <div class="panel">
+      <div class="chat-header">
+        <img src="/static/github-icon.png" class="chat-icon" alt="GitHub Icon" />
+        <span class="chat-title">GitHub Account Overview</span>
+      </div>
+      <form id="account-form" class="input-group" onsubmit="startStream(event)">
+        <input type="password" name="access_token" id="access_token" placeholder="Enter your GitHub access token" required />
+        <button type="submit">FETCH REPOS</button>
+      </form>
+      <div class="chat-box" id="account-summary-box">
+        <div class="bot-msg">Enter your GitHub token to see a summary of all your repositories.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function startStream(event) {
+      event.preventDefault();
+      const token = document.getElementById('access_token').value;
+      const box = document.getElementById('account-summary-box');
+      box.innerHTML = ''; // Clear previous
+
+      const eventSource = new EventSource(`/stream-account-summary?token=${encodeURIComponent(token)}`);
+
+      eventSource.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        const title = document.createElement('div');
+        title.className = 'repo-summary-title';
+        title.textContent = '🔹 ' + data.name;
+
+        const message = document.createElement('div');
+        message.className = 'bot-msg';
+        message.textContent = data.content;
+
+        box.appendChild(title);
+        box.appendChild(message);
+        box.scrollTop = box.scrollHeight;
+      };
+
+      eventSource.onerror = function(err) {
+        const message = document.createElement('div');
+        message.className = 'bot-msg';
+        message.textContent = '⚠️ Stream ended or failed.';
+        box.appendChild(message);
+        eventSource.close();
+      };
+    }
+  </script>
+</body>
+</html>

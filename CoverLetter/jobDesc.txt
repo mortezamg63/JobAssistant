@@ -1,0 +1,35 @@
+Kodiak Robotics, Inc. was founded in 2018 and has become the trusted world leader in autonomous ground transportation committed to a safer and more efficient future for all. The company is developing an industry-leading artificial intelligence (AI) powered technology stack purpose-built for driverless long-haul trucking applications. Kodiak’s unique modular hardware approach integrates sensors into a streamlined sensor-pod structure that optimizes for perception, scalability, and maintainability. The company autonomously delivers freight daily for its commercial customers across the Sun Belt states and for Atlas Energy in the Permian Basin. Kodiak also leverages its commercial self-driving software to develop, test and deploy autonomous capabilities for the U.S. Department of Defense.
+
+We are looking for a highly skilled Data Science Intern to join us and solve real-world robotics problems. Our ideal candidates exhibit a can-do attitude and approach their work with vigor and determination. Candidates will be expected to demonstrate excellence in their respective fields and possess the ability to learn quickly in a fast-paced environment.
+In this role, you will:
+Design and execute data-driven analyses to identify and mitigate potential safety risks within perception systems, enabling the development of thorough safety case arguments.
+Facilitate development of our data platform and ensure cleanliness.
+Correlate performance of the Kodiak Driver on-road with simulation results.
+Work closely with the perception and system team and ensure the teams are supported with data necessary to make timely, informed decisions.
+Qualifications:
+BS, MS or PhD in Computer Science, Statistics, Operations Research or related quantitative technical fields.
+Strong understanding of data aggregation and interrogation statistics metrics implementation & underlying mathematical/statistical principles.
+Thinking with a safety mindset.
+Ability to communicate complex data in a simple, actionable way.
+Practical knowledge of common data analysis, inference, and statistical modeling tools, using Python and SQL.
+Take ownership and enjoy working with the team to deliver actionable results.
+Internship experience using machine learning or statistical analysis to build data-driven product solutions or developing methodological research.
+Familiarity with version control systems like Git and experience with software development workflow.
+Experience with modeling quantities of interest as random variables using distributions and uncertainty quantification.
+Internship Program Details:
+Start Date: May/June 2025.
+Our internship program is 12-16 weeks; the end date is flexible based on individual needs.
+Location: Mountain View, CA.
+Housing: interns are responsible for housing.
+What We Offer:
+A fast paced environment where we work with talented, committed and supportive teammates.
+Competitive pay.
+Excellent medical, dental and vision benefits.  
+A beautiful facility in Mountain View.
+We love our dogs, so we are a dog friendly office!
+Free catered lunch.
+The monthly range for this intern position is $9,166-$10,000. Actual salary ranges will be based on job-related factors, including exact work location, experience, relevant training and education, and skill level. Your recruiter can share more about the specific salary range for the role location or, if the role can be performed remote, the specific salary range for your preferred location, during the hiring process. Please note that the compensation details listed above are base salary only and do not include bonus, equity, or benefits.
+
+At Kodiak, we strive to build a diverse community working towards our common company goals in a safe and collaborative environment where harassment of any kind is strictly prohibited. Kodiak is committed to equal opportunity employment regardless of race, ethnicity, religion, gender identity, sexual orientation, age, disability, or veteran status, or any other basis protected by applicable law. 
+
+In alignment with its business operations, Kodiak adheres to all relevant statutes, regulations, and administrative prerequisites. Accordingly, roles that carry more sensitive requirements may be limited to candidates that can satisfy additional scrutiny and eligibility for such positions may hinge on verification of a candidate’s residence, U.S. person status, and/or citizenship status. Should the position require, and Kodiak determines that a candidate’s residence, U.S. person status, and/or citizenship status necessitate an export license, bar the candidate from the position, or otherwise fall under national security-related restrictions, Kodiak will consider the candidate for alternative positions unaffected by such restrictions, under terms and conditions set forth at Kodiak’s sole discretion, or, as an alternative, opt not to proceed with the candidate’s application. If applicable, Kodiak may provide visa sponsorship for eligible candidates.

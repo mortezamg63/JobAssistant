@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Search Configuration</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Modify Job Search Configuration</h2>
+        <form action="{{ url_for('update_config') }}" method="POST">
+            <div class="form-group">
+                <label for="locale">Locale</label>
+                <!-- <input type="text" class="form-control" id="locale" name="locale" value="{{ config['search']['locale'] }}" required> -->
+                <select id="locale" name="locale" class="form-select">
+                    <option value="USA_ENGLISH" {% if config['search']['locale'] == 'USA_ENGLISH' %}selected{% endif %}>USA_ENGLISH</option>
+                    <option value="CANADA_ENGLISH" {% if config['search']['locale'] == 'CANADA_ENGLISH' %}selected{% endif %}>CANADA_ENGLISH</option>
+                    <option value="CANADA_FRENCH" {% if config['search']['locale'] == 'CANADA_FRENCH' %}selected{% endif %}>CANADA_FRENCH</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="providers">Job Providers</label>
+                <select multiple class="form-control" id="providers" name="providers">
+                    <option value="INDEED" {% if 'INDEED' in config['search']['providers'] %} selected {% endif %}>INDEED</option>
+                    <option value="GLASSDOOR" {% if 'GLASSDOOR' in config['search']['providers'] %} selected {% endif %}>GLASSDOOR</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="province_or_state">Province/State</label>
+                <input type="text" class="form-control" id="province_or_state" name="province_or_state" value="{{ config['search']['province_or_state'] }}">
+            </div>
+            <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" class="form-control" id="city" name="city" value="{{ config['search']['city'] }}">
+            </div>
+            <div class="form-group">
+                <label for="radius">Radius (km)</label>
+                <input type="number" class="form-control" id="radius" name="radius" value="{{ config['search']['radius'] }}" min="1" max="1000">
+            </div>
+            <div class="form-group">
+                <label for="keywords">Keywords</label>
+                <input type="text" class="form-control" id="keywords" name="keywords" value="{{ config['search']['keywords'] | join(', ') }}">
+            </div>
+            <div class="form-group">
+                <label for="max_listing_days">Max Listing Days</label>
+                <input type="number" class="form-control" id="max_listing_days" name="max_listing_days" value="{{ config['search']['max_listing_days'] }}">
+            </div>
+            <div class="form-group">
+                <label for="company_block_list">Company Block List</label>
+                <!-- <input type="text" class="form-control" id="company_block_list" name="company_block_list" value="{{ config['search']['company_block_list'] | join(', ') }}"> -->
+                <input type="text" class="form-control" id="company_block_list" name="company_block_list" placeholder="Enter blocked companies" value="{{ ','.join(config['search']['company_block_list']) }}">
+                <small class="form-text text-muted">Enter company names separated by commas.</small>
+            </div>
+            <div class="form-group">
+                <label for="remoteness">Remoteness</label>
+                <!-- <select class="form-control" id="remoteness" name="remoteness">
+                    <option value="ANY" {% if config['search']['remoteness'] == 'ANY' %} selected {% endif %}>ANY</option>
+                    <option value="IN_PERSON" {% if config['search']['remoteness'] == 'IN_PERSON' %} selected {% endif %}>IN PERSON</option>
+                    <option value="FULLY_REMOTE" {% if config['search']['remoteness'] == 'FULLY_REMOTE' %} selected {% endif %}>FULLY REMOTE</option>
+                </select> -->
+                <select id="remoteness" name="remoteness" class="form-select">
+                    <option value="IN_PERSON" {% if config['search']['remoteness'] == 'IN_PERSON' %}selected{% endif %}>IN_PERSON</option>
+                    <option value="FULLY_REMOTE" {% if config['search']['remoteness'] == 'FULLY_REMOTE' %}selected{% endif %}>FULLY_REMOTE</option>
+                    <option value="ANY" {% if config['search']['remoteness'] == 'ANY' %}selected{% endif %}>ANY</option>
+                    <option value="TEMPORARILY_REMOTE" {% if config['search']['remoteness'] == 'TEMPORARILY_REMOTE' %}selected{% endif %}>TEMPORARILY_REMOTE</option>
+                    <option value="PARTIALLY_REMOTE" {% if config['search']['remoteness'] == 'PARTIALLY_REMOTE' %}selected{% endif %}>PARTIALLY_REMOTE</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Configuration</button>
+        </form>
+    </div>
+</body>
+</html>
+
+
+
+ -->

@@ -1,0 +1,35 @@
+# src/research_crew/config/tasks.yaml
+research_task:
+  description: >
+    Conduct thorough research on company {company} based on job descrition {job_description}. Focus on:
+    1. Current company active tasks and activities related to the resume
+    2. Historical company research and projects that exist in job description
+    3. Major challenges and opportunities in the company that should be considered 
+    4. Recent news and events that helps to land the job in the company
+    5. Future outlook and potential developments that can meet the job requirements
+
+    Make sure to organize your findings in a structured format with clear sections that has connection with the
+    following job description
+  expected_output: >
+    A comprehensive research document with well-organized sections covering
+    all the requested aspects of {company}. Include specific facts, figures,
+    and examples where relevant.
+  agent: researcher
+
+analysis_task:
+  description: >
+    Analyze the research findings and create a comprehensive report on {company} based on the job description {job_description}.
+    Your report should:
+    1. Begin with an executive summary
+    2. Include all key information from the research
+    3. Provide insightful analysis of trends and job requirements w.r.t the role that job seeker is trying to land a position
+    4. Offer an outlook for company, noting that this should be used in resume for landing the job
+    5. Be formatted in a professional, easy-to-read style with clear headings
+  expected_output: >
+    A polished, professional report on {company} that presents the research
+    findings with added analysis and insights. The report should be well-structured
+    with an executive summary, main sections, and conclusion.
+  agent: analyst
+  context:
+    - research_task
+  output_file: output/report.md

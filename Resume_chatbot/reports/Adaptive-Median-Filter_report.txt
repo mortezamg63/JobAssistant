@@ -1,0 +1,1 @@
+This project offers Matlab source code for implementing an Adaptive Median Filter. The main function, `AdaptiveFilter`, processes an image matrix using a specified filter size to reduce noise in an image. An example is provided using a filter size of 13, highlighting the filter's effectiveness on a noisy image.

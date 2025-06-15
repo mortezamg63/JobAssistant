@@ -1,0 +1,111 @@
+body {
+  background: #0e1624;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.chat-container {
+  width: 500px;
+  background: #101c2c;
+  border: 2px solid rgba(255, 215, 0, 0.2);
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+  position: relative;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-logo {
+  font-size: 1.8rem;
+  background: linear-gradient(145deg, gold, #caa853);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.chat-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fefefe;
+}
+
+.chat-box {
+  background-color: #0d1b2a;
+  border-radius: 12px;
+  padding: 15px;
+  height: 300px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bot-msg, .user-msg {
+  max-width: 80%;
+  padding: 14px 18px;
+  border-radius: 18px;
+  font-size: 1rem;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.bot-msg {
+  background-color: #14243c;
+  color: #e6e6e6;
+  align-self: flex-start;
+}
+
+.user-msg {
+  background-color: #204377;
+  color: #ffffff;
+  align-self: flex-end;
+}
+
+.chat-input {
+  display: flex;
+  gap: 10px;
+}
+
+input[type="text"] {
+  flex-grow: 1;
+  padding: 12px 15px;
+  border-radius: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  background-color: #0d1b2a;
+  color: white;
+  outline: none;
+}
+
+input::placeholder {
+  color: #999;
+}
+
+button {
+  padding: 12px 20px;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #284466, #0c2a4d);
+  color: white;
+  border: 1px solid #3c5774;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #365d84, #1c3c61);
+}

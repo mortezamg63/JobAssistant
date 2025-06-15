@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Search Configuration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      background: #0b1c2f;
+      font-family: 'Segoe UI', sans-serif;
+      color: #f5e9d7;
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .config-wrapper {
+      width: 760px;
+      background: #101e33;
+      padding: 36px;
+      border-radius: 24px;
+      border: 1.5px solid rgba(255, 215, 0, 0.25);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.08);
+    }
+
+    .form-title {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #ffe082;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid #425063;
+      background: #0f1a2a;
+      color: #f5e9d7;
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    select[multiple] {
+      height: 100px;
+    }
+
+    input::placeholder {
+      color: #aaa;
+    }
+
+    .form-text {
+      font-size: 0.85rem;
+      color: #bbb;
+      margin-top: -16px;
+      margin-bottom: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #284466, #0c2a4d);
+      border: 1px solid #3c5774;
+      color: #f5e9d7;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #3d6b97, #163b5e);
+    }
+  </style>
+</head>
+<body>
+  <div class="config-wrapper">
+    <div class="form-title">⚙️ Job Search Configuration</div>
+    <form action="{{ url_for('update_config') }}" method="POST">
+      <label for="locale">Locale</label>
+      <select id="locale" name="locale">
+        <option value="USA_ENGLISH" {% if config['search']['locale'] == 'USA_ENGLISH' %}selected{% endif %}>USA_ENGLISH</option>
+        <option value="CANADA_ENGLISH" {% if config['search']['locale'] == 'CANADA_ENGLISH' %}selected{% endif %}>CANADA_ENGLISH</option>
+        <option value="CANADA_FRENCH" {% if config['search']['locale'] == 'CANADA_FRENCH' %}selected{% endif %}>CANADA_FRENCH</option>
+      </select>
+
+      <label for="providers">Job Providers</label>
+      <select multiple id="providers" name="providers">
+        <option value="INDEED" {% if 'INDEED' in config['search']['providers'] %} selected {% endif %}>INDEED</option>
+        <option value="GLASSDOOR" {% if 'GLASSDOOR' in config['search']['providers'] %} selected {% endif %}>GLASSDOOR</option>
+      </select>
+
+      <label for="province_or_state">Province/State</label>
+      <input type="text" id="province_or_state" name="province_or_state" value="{{ config['search']['province_or_state'] }}" />
+
+      <label for="city">City</label>
+      <input type="text" id="city" name="city" value="{{ config['search']['city'] }}" />
+
+      <label for="radius">Radius (km)</label>
+      <input type="number" id="radius" name="radius" value="{{ config['search']['radius'] }}" min="1" max="1000" />
+
+      <label for="keywords">Keywords</label>
+      <input type="text" id="keywords" name="keywords" value="{{ config['search']['keywords'] | join(', ') }}" />
+
+      <label for="max_listing_days">Max Listing Days</label>
+      <input type="number" id="max_listing_days" name="max_listing_days" value="{{ config['search']['max_listing_days'] }}" />
+
+      <label for="company_block_list">Company Block List</label>
+      <input type="text" id="company_block_list" name="company_block_list" value="{{ ','.join(config['search']['company_block_list']) }}" placeholder="Enter blocked companies" />
+      <div class="form-text">Enter company names separated by commas.</div>
+
+      <label for="remoteness">Remoteness</label>
+      <select id="remoteness" name="remoteness">
+        <option value="IN_PERSON" {% if config['search']['remoteness'] == 'IN_PERSON' %}selected{% endif %}>IN_PERSON</option>
+        <option value="FULLY_REMOTE" {% if config['search']['remoteness'] == 'FULLY_REMOTE' %}selected{% endif %}>FULLY_REMOTE</option>
+        <option value="ANY" {% if config['search']['remoteness'] == 'ANY' %}selected{% endif %}>ANY</option>
+        <option value="TEMPORARILY_REMOTE" {% if config['search']['remoteness'] == 'TEMPORARILY_REMOTE' %}selected{% endif %}>TEMPORARILY_REMOTE</option>
+        <option value="PARTIALLY_REMOTE" {% if config['search']['remoteness'] == 'PARTIALLY_REMOTE' %}selected{% endif %}>PARTIALLY_REMOTE</option>
+      </select>
+
+      <button type="submit">💾 Save Configuration</button>
+    </form>
+  </div>
+</body>
+</html>

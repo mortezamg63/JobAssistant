@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Resume Editor & Suggestions</title>
+  <style>
+    /* Import Roboto */
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+    /* Reset & Vars */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    :root {
+      --bg: #f0f2f5;
+      --panel-bg: #ffffff;
+      --primary: #4a90e2;
+      --accent: #ffb400;
+      --text: #333;
+      --border: #d1d5db;
+      --radius: 8px;
+      --shadow: 0 2px 8px rgba(0,0,0,0.1);
+      --transition: 0.3s ease;
+      --progress-bg: #e1e5ea;
+      --progress-grad: linear-gradient(90deg, #ffeb3b, #4caf50);
+      --progress-height: 0.8rem;
+    }
+
+    body {
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      color: var(--text);
+    }
+
+    /* Panels */
+    #suggestions-panel, #editor-panel {
+      background: var(--panel-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1rem;
+      margin: 1rem;
+      overflow-y: auto;
+      transition: box-shadow var(--transition), transform var(--transition);
+    }
+    #suggestions-panel:hover, #editor-panel:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      transform: translateY(-2px);
+    }
+    #suggestions-panel { flex: 0 0 30%; }
+    #editor-panel    { flex: 1; }
+
+    /* Headings */
+    #suggestions-panel h1,
+    #editor-panel h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+    #suggestions-panel h2,
+    #editor-panel h2 {
+      font-size: 1.2rem;
+      margin: 1.5rem 0 1rem;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.25rem;
+    }
+    #suggestions-panel h3,
+    #suggestions-panel h4 {
+      margin: 1rem 0 0.5rem;
+      font-weight: 500;
+    }
+
+    /* Inputs */
+    textarea, input, .editor {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.6rem;
+      font-family: inherit;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    textarea:focus, input:focus, .editor:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(74,144,226,0.2);
+    }
+    #jobDescInput { height: 100px; resize: vertical; }
+
+    /* Buttons */
+    button {
+      font-family: inherit;
+      border: none;
+      border-radius: var(--radius);
+      padding: 0.5rem 1rem;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background var(--transition), box-shadow var(--transition);
+    }
+    button:hover {
+      background: #357abd;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    /* secondary buttons */
+    #saveJobDescBtn,
+    #calcSimilarityBtn {
+      background: #ddd;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    #saveJobDescBtn:hover,
+    #calcSimilarityBtn:hover {
+      background: #aaa;
+    }
+
+    /* Add-Subsection button (full width at bottom) */
+    .add-sub-btn {
+      display: block;
+      width: 10%;
+      margin: 1rem 0 0;
+      padding: 0.75rem;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 500;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      transition: background var(--transition), box-shadow var(--transition);
+    }
+    .add-sub-btn:hover {
+      background: #d99800;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    /* Job desc label */
+    #job-desc-wrapper label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    #job-desc-wrapper { margin-bottom: 1rem; }
+
+    /* Progress bars (left) */
+    #similarity-results {
+      margin: 1rem 0;
+      padding: 1rem;
+      background: #fafafa;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+    }
+    #similarity-results h2 {
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+    .bar-wrapper {
+      margin-bottom: 1rem;
+    }
+    .bar-wrapper label {
+      display: block;
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+    progress {
+      width: 100%;
+      height: var(--progress-height);
+      border: none;
+      border-radius: var(--radius);
+      background: var(--progress-bg);
+      overflow: hidden;
+    }
+    progress::-webkit-progress-bar { background: var(--progress-bg); }
+    progress::-webkit-progress-value {
+      background: var(--progress-grad);
+      transition: width var(--transition);
+    }
+    progress::-moz-progress-bar {
+      background: var(--progress-grad);
+      transition: width var(--transition);
+    }
+
+    /* Suggestions list */
+    .suggestion-item {
+      background: #f9f9f9;
+      border-left: 4px solid var(--accent);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: var(--radius);
+      transition: background var(--transition);
+    }
+    .suggestion-item.done { background: #ececec; }
+    .suggestion-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .done-btn {
+      margin-right: 0.75rem;
+      font-size: 1.2rem;
+      color: var(--accent);
+      background: none;
+    }
+
+    /* Editor sections */
+    .main-section {
+      margin-bottom: 1.5rem;
+    }
+    .main-section > h2 {
+      margin-bottom: 1rem;
+    }
+    .subsection {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      position: relative;
+      transition: box-shadow var(--transition);
+    }
+    .subsection:hover {
+      box-shadow: var(--shadow);
+    }
+    .delete-btn {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: none;
+      font-size: 1.1rem;
+      color: #e74c3c;
+      cursor: pointer;
+    }
+    .subtitle-input {
+      margin-bottom: 0.75rem;
+      font-size: 1rem;
+      border: none;
+      font-weight: 800;
+      border-bottom: 1px solid var(--border);
+      background: #555555;
+      color: #ffffff;
+    }
+
+    /* Top-right widget */
+    #similarity-topright {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      width: 220px;
+      background: var(--panel-bg);
+      padding: 1rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      z-index: 1000;
+      display: none;
+    }
+    #similarity-topright h3 {
+      margin-bottom: 0.75rem;
+      text-align: center;
+      color: var(--primary);
+    }
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-bottom: 0.25rem;
+    }
+    .bar-container {
+      width: 100%;
+      height: 6px;
+      background: var(--progress-bg);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    .bar-fill {
+      height: 100%;
+      width: 0;
+      background: var(--progress-grad);
+      transition: width var(--transition);
+    }
+  </style>
+</head>
+<body>
+  <!-- Top-right similarity widget -->
+  <div id="similarity-topright">
+    <h3>Similarity</h3>
+    <div class="bar-label"><span>Hybrid</span><span id="hybridTopScore">0%</span></div>
+    <div class="bar-container"><div class="bar-fill" id="hybridTopFill"></div></div>
+    <div class="bar-label"><span>Semantic</span><span id="semanticTopScore">0%</span></div>
+    <div class="bar-container"><div class="bar-fill" id="semanticTopFill"></div></div>
+    <div class="bar-label"><span>Keyword</span><span id="keywordTopScore">0%</span></div>
+    <div class="bar-container"><div class="bar-fill" id="keywordTopFill"></div></div>
+  </div>
+
+  <!-- LEFT PANEL -->
+  <div id="suggestions-panel">
+    <h1>Suggestions</h1>
+    <div id="job-desc-wrapper">
+      <label for="jobDescInput">Job Description</label>
+      <textarea id="jobDescInput" placeholder="Paste job description here…"></textarea>
+      <button id="saveJobDescBtn">Save Job Description</button>
+      <button id="calcSimilarityBtn">Calculate Similarity</button>
+    </div>
+    <div id="similarity-results" style="display:none;">
+      <h2>Similarity Scores</h2>
+      <div class="bar-wrapper">
+        <label for="hybridProgress">Hybrid: <span id="hybridScore">0%</span></label>
+        <progress id="hybridProgress" max="100" value="0"></progress>
+      </div>
+      <div class="bar-wrapper">
+        <label for="semanticProgress">Semantic: <span id="semanticScore">0%</span></label>
+        <progress id="semanticProgress" max="100" value="0"></progress>
+      </div>
+      <div class="bar-wrapper">
+        <label for="keywordProgress">Keyword: <span id="keywordScore">0%</span></label>
+        <progress id="keywordProgress" max="100" value="0"></progress>
+      </div>
+    </div>
+    <div id="suggestions-display"></div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="editor-panel">
+    <h1>Resume Editor</h1>
+    <div id="upload-area">
+      <input type="file" id="fileInput" accept=".pdf,.doc,.docx"/>
+      <button id="uploadBtn">Upload &amp; Parse</button>
+      <button id="exportBtn">Save as PDF</button>
+      <div id="status"></div>
+    </div>
+    <div id="sections"></div>
+  </div>
+
+  <script>
+    // === JOB DESCRIPTION & SIMILARITY ===
+    const jobDescInput     = document.getElementById('jobDescInput');
+    const saveJobDescBtn   = document.getElementById('saveJobDescBtn');
+    const calcSimilarityBtn = document.getElementById('calcSimilarityBtn');
+    const similarityResults = document.getElementById('similarity-results');
+    const hybridScoreEl    = document.getElementById('hybridScore');
+    const semanticScoreEl  = document.getElementById('semanticScore');
+    const keywordScoreEl   = document.getElementById('keywordScore');
+    const hybridProgress   = document.getElementById('hybridProgress');
+    const semanticProgress = document.getElementById('semanticProgress');
+    const keywordProgress  = document.getElementById('keywordProgress');
+
+    // top-right widget elems
+    const similarityTop     = document.getElementById('similarity-topright');
+    const hybridTopScoreEl  = document.getElementById('hybridTopScore');
+    const semanticTopScoreEl= document.getElementById('semanticTopScore');
+    const keywordTopScoreEl = document.getElementById('keywordTopScore');
+    const hybridTopFill     = document.getElementById('hybridTopFill');
+    const semanticTopFill   = document.getElementById('semanticTopFill');
+    const keywordTopFill    = document.getElementById('keywordTopFill');
+
+    async function initJobDesc() {
+      try {
+        const res = await fetch('/jobdesc');
+        const { job_description } = await res.json();
+        jobDescInput.value = job_description || '';
+      } catch (e) {
+        console.error('JobDesc load failed', e);
+      }
+    }
+    saveJobDescBtn.addEventListener('click', async () => {
+      await fetch('/jobdesc', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ job_description: jobDescInput.value })
+      });
+    });
+
+    calcSimilarityBtn.addEventListener('click', async () => {
+      const resumeBlocks = [];
+      document.querySelectorAll('.subsection').forEach(sub => {
+        resumeBlocks.push(sub.querySelector('.editor').innerText);
+      });
+      const resumeText = resumeBlocks.join('\n');
+
+      const res = await fetch('/similarity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          resume: resumeText,
+          job_description: jobDescInput.value
+        })
+      });
+      const data = await res.json();
+
+      // left-panel progress bars
+      hybridProgress.value   = data.hybrid_score;
+      semanticProgress.value = data.semantic_score;
+      keywordProgress.value  = data.keyword_score;
+      hybridScoreEl.textContent   = data.hybrid_score + '%';
+      semanticScoreEl.textContent = data.semantic_score + '%';
+      keywordScoreEl.textContent  = data.keyword_score + '%';
+      similarityResults.style.display = 'block';
+
+      // top-right widget
+      hybridTopFill.style.width   = data.hybrid_score + '%';
+      semanticTopFill.style.width = data.semantic_score + '%';
+      keywordTopFill.style.width  = data.keyword_score + '%';
+      hybridTopScoreEl.textContent   = data.hybrid_score + '%';
+      semanticTopScoreEl.textContent = data.semantic_score + '%';
+      keywordTopScoreEl.textContent  = data.keyword_score + '%';
+      similarityTop.style.display = 'block';
+    });
+
+    // === SUGGESTIONS PANEL ===
+    const outPanel = document.getElementById('suggestions-display');
+    async function initSuggestions() {
+      try {
+        const res = await fetch('/suggestions');
+        const data = await res.json();
+        renderSuggestions(data);
+      } catch (e) {
+        console.error('Suggestions load failed', e);
+      }
+    }
+    function renderSuggestions(data) {
+      outPanel.innerHTML = '';
+      ['existing','missing'].forEach(kind => {
+        const list = data[kind] || [];
+        if (!list.length) return;
+        const h2 = document.createElement('h2');
+        h2.textContent = kind[0].toUpperCase() + kind.slice(1);
+        outPanel.appendChild(h2);
+        const hr = document.createElement('hr');
+        hr.className = 'section-divider';
+        outPanel.appendChild(hr);
+
+        const bySec = {};
+        list.forEach(item => {
+          (bySec[item.section] = bySec[item.section]||[]).push(item);
+        });
+        Object.entries(bySec).forEach(([sect, items]) => {
+          const h3 = document.createElement('h3');
+          h3.textContent = sect;
+          outPanel.appendChild(h3);
+
+          items.forEach(item => {
+            const h4 = document.createElement('h4');
+            h4.textContent = item.subsection || '(no subtitle)';
+            outPanel.appendChild(h4);
+
+            const cat = document.createElement('div');
+            cat.innerHTML = `<em>Category:</em> ${item.category}`;
+            outPanel.appendChild(cat);
+
+            const normalized = item.suggestions.map(s =>
+              typeof s === 'object'
+                ? { text: s.text, proposed: s.proposed || '' }
+                : { text: s, proposed: '' }
+            );
+            normalized.forEach(({ text, proposed }) => {
+              const wrap = document.createElement('div');
+              wrap.className = 'suggestion-item';
+
+              const header = document.createElement('div');
+              header.className = 'suggestion-header';
+
+              const btn = document.createElement('button');
+              btn.className = 'done-btn';
+              btn.textContent = '✔️';
+              btn.onclick = () => wrap.classList.toggle('done');
+              header.appendChild(btn);
+
+              const span = document.createElement('span');
+              span.className = 'suggestion-text';
+              span.textContent = text;
+              header.appendChild(span);
+
+              wrap.appendChild(header);
+
+              const ta = document.createElement('textarea');
+              ta.className = 'proposed-textarea';
+              ta.placeholder = 'Proposed resume text here…';
+              ta.value = proposed;
+              wrap.appendChild(ta);
+
+              outPanel.appendChild(wrap);
+            });
+          });
+        });
+      });
+    }
+
+    // === RESUME EDITOR ===
+    const fileInput   = document.getElementById('fileInput');
+    const uploadBtn   = document.getElementById('uploadBtn');
+    const exportBtn   = document.getElementById('exportBtn');
+    const statusDiv   = document.getElementById('status');
+    const sectionsDiv = document.getElementById('sections');
+
+    uploadBtn.onclick = async () => {
+      const f = fileInput.files[0];
+      if (!f) return alert('Select a file first.');
+      statusDiv.textContent = 'Uploading…';
+      const form = new FormData(); form.append('file', f);
+      const r = await fetch('/upload', { method: 'POST', body: form });
+      if (!r.ok) return statusDiv.textContent = 'Upload failed';
+      const { sections } = await r.json();
+      statusDiv.textContent = `Parsed ${sections.length} items.`;
+      renderSections(sections);
+    };
+
+    exportBtn.onclick = async () => {
+      const secs = [];
+      document.querySelectorAll('.subsection').forEach(sub => {
+        secs.push({
+          section: sub.closest('.main-section').querySelector('h2').textContent,
+          subtitle: sub.querySelector('.subtitle-input').value,
+          html: sub.querySelector('.editor').innerHTML
+        });
+      });
+      statusDiv.textContent = 'Generating PDF…';
+      const r = await fetch('/export', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sections: secs })
+      });
+      if (!r.ok) return statusDiv.textContent = 'Export failed';
+      const blob = await r.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url; a.download = 'resume.pdf'; a.click();
+      URL.revokeObjectURL(url);
+      statusDiv.textContent = 'PDF ready!';
+    };
+
+    async function fetchSections() {
+      statusDiv.textContent = 'Loading…';
+      const r = await fetch('/sections');
+      if (!r.ok) return statusDiv.textContent = 'Failed to load.';
+      const secs = await r.json();
+      statusDiv.textContent = `Loaded ${secs.length} items.`;
+      renderSections(secs);
+    }
+
+    function renderSections(sections) {
+      const byMain = {};
+      sections.forEach(s => (byMain[s.section] = byMain[s.section]||[]).push(s));
+      sectionsDiv.innerHTML = '';
+      Object.entries(byMain).forEach(([mainTitle, subs]) => {
+        const main = document.createElement('div');
+        main.className = 'main-section';
+        main.innerHTML = `<h2>${mainTitle}</h2>`;
+
+        // append existing subsections
+        subs.forEach(sec => {
+          const sub = document.createElement('div');
+          sub.className = 'subsection';
+          sub.dataset.id = sec.id;
+
+          const del = document.createElement('button');
+          del.className    = 'delete-btn';
+          del.textContent = '🗑️';
+          del.onclick = async () => {
+            if (!confirm(`Delete "${sec.subtitle}"?`)) return;
+            const r3 = await fetch(`/sections/${sec.id}`,{method:'DELETE'});
+            if (r3.ok) fetchSections();
+          };
+          sub.appendChild(del);
+
+          const inp = document.createElement('input');
+          inp.className = 'subtitle-input';
+          inp.value     = sec.subtitle;
+          sub.appendChild(inp);
+
+          const ed = document.createElement('div');
+          ed.className      = 'editor';
+          ed.contentEditable = true;
+          ed.innerHTML      = sec.html;
+          sub.appendChild(ed);
+
+          main.appendChild(sub);
+        });
+
+        // then add the button at the bottom
+        const add = document.createElement('button');
+        add.className    = 'add-sub-btn';
+        add.textContent = '+ Add Subsection';
+        add.onclick = async () => {
+          const st = prompt(`Subtitle for "${mainTitle}"?`);
+          if (!st) return;
+          const payload = { section: mainTitle, subtitle: st, html: '' };
+          const resp = await fetch('/sections', {
+            method:'POST',
+            headers:{ 'Content-Type':'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (resp.ok) fetchSections();
+        };
+        main.appendChild(add);
+
+        sectionsDiv.appendChild(main);
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initJobDesc();
+      initSuggestions();
+      fetchSections();
+    });
+  </script>
+</body>
+</html>

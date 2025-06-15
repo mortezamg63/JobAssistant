@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Resume / Profile</title>
+  <!-- Bootstrap CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  />
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  />
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-size: 1.6rem;
+      margin: 0;
+      padding: 0;
+    }
+    .container-custom {
+      height: 80vh;
+    }
+    .card {
+      border: none;
+      border-radius: 1rem;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    }
+    .card-header {
+      background-color: #0d6efd;
+      color: #fff;
+      text-align: center;
+      font-size: 2.2rem;
+      padding: 1.5rem;
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+    }
+    .card-body {
+      padding: 1rem;
+    }
+    .card-footer {
+      padding: 1rem 1.5rem;
+      background-color: #fff;
+      border-top: 1px solid #ccc;
+    }
+    .d-flex-container {
+      display: flex;
+      height: 100%;
+    }
+    .left-panel {
+      width: 20%;
+      border-right: 1px solid #ccc;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    .right-panel {
+      width: 80%;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    .form-label {
+      font-weight: 600;
+    }
+    .form-control {
+      border-radius: 0.5rem;
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+    .btn {
+      font-size: 1.6rem;
+    }
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+    .card-small {
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background-color: #fff;
+      position: relative;
+    }
+    .card-small h6 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    /* Inline Edit/Delete Buttons (icons or text) */
+    .edit-btn,
+    .delete-btn {
+      position: absolute;
+      top: 10px;
+      cursor: pointer;
+      font-size: 1.4rem;
+      background: none;
+      border: none;
+    }
+    .edit-btn {
+      right: 50px;
+      color: #0d6efd;
+    }
+    .delete-btn {
+      right: 10px;
+      color: #dc3545;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid d-flex align-items-center justify-content-center container-custom">
+    <div class="card w-100" style="height: 100%;">
+      <div class="card-header">Resume / Profile</div>
+      
+      <!-- Main Form for Basic Info and Dynamic Fields -->
+      <form
+        method="POST"
+        action="{{ url_for('profile.profile') }}"
+        enctype="multipart/form-data"
+        style="height: calc(100% - 100px);"
+      >
+        <div class="card-body d-flex-container">
+          <!-- Left Panel: Basic Personal Info and File Uploads -->
+          <div class="left-panel">
+            <div class="mb-3">
+              <label for="firstName" class="form-label">First Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="firstName"
+                name="first_name"
+                value="{{ profile.first_name }}"
+                placeholder="Enter first name"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="middleName" class="form-label">Middle Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="middleName"
+                name="middle_name"
+                value="{{ profile.middle_name }}"
+                placeholder="Enter middle name"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="lastName" class="form-label">Last Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="lastName"
+                name="last_name"
+                value="{{ profile.last_name }}"
+                placeholder="Enter last name"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                value="{{ profile.email }}"
+                placeholder="Enter email"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="phone" class="form-label">Phone</label>
+              <input
+                type="text"
+                class="form-control"
+                id="phone"
+                name="phone"
+                value="{{ profile.phone }}"
+                placeholder="Enter phone number"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="address" class="form-label">Address</label>
+              <input
+                type="text"
+                class="form-control"
+                id="address"
+                name="address"
+                value="{{ profile.address }}"
+                placeholder="Enter address"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="birthDate" class="form-label">Date of Birth</label>
+              <input
+                type="date"
+                class="form-control"
+                id="birthDate"
+                name="birth_date"
+                value="{{ profile.birth_date }}"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="profilePic" class="form-label">Profile Picture</label>
+              <input
+                type="file"
+                class="form-control"
+                id="profilePic"
+                name="profile_pic"
+              />
+              {% if profile.profile_pic %}
+                <p class="mt-1">Current: {{ profile.profile_pic }}</p>
+              {% endif %}
+            </div>
+            <div class="mb-3">
+              <label for="resumeFile" class="form-label">Resume File</label>
+              <input
+                type="file"
+                class="form-control"
+                id="resumeFile"
+                name="resume_file"
+              />
+              {% if profile.resume_file %}
+                <p class="mt-1">Current: {{ profile.resume_file }}</p>
+              {% endif %}
+            </div>
+          </div>
+          <!-- Right Panel: Dynamic Sections -->
+          <div class="right-panel">
+            <!-- Work Experiences -->
+            <div class="section-title">Work Experiences</div>
+            {% if profile.work_experiences %}
+              {% for wexp in profile.work_experiences %}
+              <div class="card-small" data-wexp-id="{{ wexp.id }}">
+                <!-- Edit & Delete Buttons -->
+                <button
+                  type="button"
+                  class="edit-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#workExperienceModal"
+                  data-id="{{ wexp.id }}"
+                  data-company="{{ wexp.company }}"
+                  data-location="{{ wexp.location }}"
+                  data-position_title="{{ wexp.position_title }}"
+                  data-experience_type="{{ wexp.experience_type }}"
+                  data-start_month="{{ wexp.start_month }}"
+                  data-start_year="{{ wexp.start_year }}"
+                  data-end_month="{{ wexp.end_month }}"
+                  data-end_year="{{ wexp.end_year }}"
+                  data-currently_work_here="{{ wexp.currently_work_here }}"
+                  data-description="{{ wexp.description }}"
+                >
+                  <i class="fas fa-edit"></i>
+                </button>
+                <form
+                  method="POST"
+                  action="{{ url_for('profile.delete_work_experience', wexp_id=wexp.id) }}"
+                  style="display: inline;"
+                  onsubmit="return confirm('Are you sure you want to delete this work experience?');"
+                >
+                  <button type="submit" class="delete-btn">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+                <h6>{{ wexp.position_title }} @ {{ wexp.company }}</h6>
+                <p><strong>Location:</strong> {{ wexp.location }}</p>
+                <p><strong>Type:</strong> {{ wexp.experience_type }}</p>
+                <p>
+                  <strong>Start:</strong> {{ wexp.start_month }} {{ wexp.start_year }} &nbsp; | &nbsp;
+                  <strong>End:</strong>
+                  {% if wexp.currently_work_here %}
+                    Present
+                  {% else %}
+                    {{ wexp.end_month }} {{ wexp.end_year }}
+                  {% endif %}
+                </p>
+                <p>{{ wexp.description }}</p>
+              </div>
+              {% endfor %}
+            {% else %}
+              <p class="text-muted">No work experiences added yet.</p>
+            {% endif %}
+            <button
+              type="button"
+              class="btn btn-outline-primary mb-4"
+              data-bs-toggle="modal"
+              data-bs-target="#workExperienceModal"
+              onclick="clearWorkExpModal()"
+            >
+              <i class="fas fa-briefcase"></i> Add Work Experience
+            </button>
+
+            <!-- Academic Experiences -->
+            <div class="section-title">Academic Experiences</div>
+            {% if profile.academic_experiences %}
+              {% for aexp in profile.academic_experiences %}
+              <div class="card-small" data-aexp-id="{{ aexp.id }}">
+                <button
+                  type="button"
+                  class="edit-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#academicExperienceModal"
+                  data-id="{{ aexp.id }}"
+                  data-company="{{ aexp.company }}"
+                  data-location="{{ aexp.location }}"
+                  data-position_title="{{ aexp.position_title }}"
+                  data-experience_type="{{ aexp.experience_type }}"
+                  data-start_month="{{ aexp.start_month }}"
+                  data-start_year="{{ aexp.start_year }}"
+                  data-end_month="{{ aexp.end_month }}"
+                  data-end_year="{{ aexp.end_year }}"
+                  data-currently_work_here="{{ aexp.currently_work_here }}"
+                  data-description="{{ aexp.description }}"
+                >
+                  <i class="fas fa-edit"></i>
+                </button>
+                <form
+                  method="POST"
+                  action="{{ url_for('profile.delete_academic_experience', aexp_id=aexp.id) }}"
+                  style="display: inline;"
+                  onsubmit="return confirm('Are you sure you want to delete this academic experience?');"
+                >
+                  <button type="submit" class="delete-btn">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+                <h6>{{ aexp.position_title }} @ {{ aexp.company }}</h6>
+                <p><strong>Location:</strong> {{ aexp.location }}</p>
+                <p><strong>Type:</strong> {{ aexp.experience_type }}</p>
+                <p>
+                  <strong>Start:</strong> {{ aexp.start_month }} {{ aexp.start_year }} &nbsp; | &nbsp;
+                  <strong>End:</strong>
+                  {% if aexp.currently_work_here %}
+                    Present
+                  {% else %}
+                    {{ aexp.end_month }} {{ aexp.end_year }}
+                  {% endif %}
+                </p>
+                <p>{{ aexp.description }}</p>
+              </div>
+              {% endfor %}
+            {% else %}
+              <p class="text-muted">No academic experiences added yet.</p>
+            {% endif %}
+            <button
+              type="button"
+              class="btn btn-outline-primary mb-4"
+              data-bs-toggle="modal"
+              data-bs-target="#academicExperienceModal"
+              onclick="clearAcademicExpModal()"
+            >
+              <i class="fas fa-university"></i> Add Academic Experience
+            </button>
+
+            <!-- Educations -->
+            <div class="section-title">Educations</div>
+            {% if profile.educations %}
+              {% for edu in profile.educations %}
+              <div class="card-small" data-edu-id="{{ edu.id }}">
+                <button
+                  type="button"
+                  class="edit-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#educationModal"
+                  data-id="{{ edu.id }}"
+                  data-school_name="{{ edu.school_name }}"
+                  data-new_school_name="{{ edu.new_school_name }}"
+                  data-major="{{ edu.major }}"
+                  data-degree_type="{{ edu.degree_type }}"
+                  data-gpa="{{ edu.gpa }}"
+                  data-start_month="{{ edu.start_month }}"
+                  data-start_year="{{ edu.start_year }}"
+                  data-end_month="{{ edu.end_month }}"
+                  data-end_year="{{ edu.end_year }}"
+                >
+                  <i class="fas fa-edit"></i>
+                </button>
+                <form
+                  method="POST"
+                  action="{{ url_for('profile.delete_education', edu_id=edu.id) }}"
+                  style="display: inline;"
+                  onsubmit="return confirm('Are you sure you want to delete this education?');"
+                >
+                  <button type="submit" class="delete-btn">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+                <h6>
+                  {{ edu.school_name }}
+                  {% if edu.new_school_name %}- {{ edu.new_school_name }}{% endif %}
+                </h6>
+                <p>
+                  <strong>Major:</strong> {{ edu.major }} |
+                  <strong>Degree:</strong> {{ edu.degree_type }}
+                </p>
+                <p><strong>GPA:</strong> {{ edu.gpa }}</p>
+                <p>
+                  <strong>Start:</strong> {{ edu.start_month }} {{ edu.start_year }} &nbsp; | &nbsp;
+                  <strong>End:</strong> {{ edu.end_month }} {{ edu.end_year }}
+                </p>
+              </div>
+              {% endfor %}
+            {% else %}
+              <p class="text-muted">No education records added yet.</p>
+            {% endif %}
+            <button
+              type="button"
+              class="btn btn-outline-primary mb-4"
+              data-bs-toggle="modal"
+              data-bs-target="#educationModal"
+              onclick="clearEducationModal()"
+            >
+              <i class="fas fa-graduation-cap"></i> Add Education
+            </button>
+
+            <!-- Publications -->
+            <div class="section-title">Publications</div>
+            {% if profile.publications %}
+              {% for pub in profile.publications %}
+              <div class="card-small" data-pub-id="{{ pub.id }}">
+                <button
+                  type="button"
+                  class="edit-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#publicationModal"
+                  data-id="{{ pub.id }}"
+                  data-title="{{ pub.title }}"
+                  data-authors="{{ pub.authors }}"
+                  data-link="{{ pub.link }}"
+                  data-year="{{ pub.year }}"
+                  data-publisher="{{ pub.publisher }}"
+                >
+                  <i class="fas fa-edit"></i>
+                </button>
+                <form
+                  method="POST"
+                  action="{{ url_for('profile.delete_publication', pub_id=pub.id) }}"
+                  style="display: inline;"
+                  onsubmit="return confirm('Are you sure you want to delete this publication?');"
+                >
+                  <button type="submit" class="delete-btn">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+                <h6>{{ pub.title }}</h6>
+                <p><strong>Authors:</strong> {{ pub.authors }}</p>
+                <p><strong>Year:</strong> {{ pub.year }}</p>
+                <p><strong>Publisher:</strong> {{ pub.publisher }}</p>
+                <p>
+                  <strong>Link:</strong>
+                  <a href="{{ pub.link }}" target="_blank">{{ pub.link }}</a>
+                </p>
+              </div>
+              {% endfor %}
+            {% else %}
+              <p class="text-muted">No publications added yet.</p>
+            {% endif %}
+            <button
+              type="button"
+              class="btn btn-outline-primary mb-4"
+              data-bs-toggle="modal"
+              data-bs-target="#publicationModal"
+              onclick="clearPublicationModal()"
+            >
+              <i class="fas fa-plus"></i> Add Publication
+            </button>
+
+            <!-- Projects -->
+            <div class="section-title">Projects</div>
+            {% if profile.projects %}
+              {% for proj in profile.projects %}
+              <div class="card-small" data-proj-id="{{ proj.id }}">
+                <button
+                  type="button"
+                  class="edit-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#projectModal"
+                  data-id="{{ proj.id }}"
+                  data-title="{{ proj.title }}"
+                  data-description="{{ proj.description }}"
+                  data-link="{{ proj.link }}"
+                >
+                  <i class="fas fa-edit"></i>
+                </button>
+                <form
+                  method="POST"
+                  action="{{ url_for('profile.delete_project', project_id=proj.id) }}"
+                  style="display: inline;"
+                  onsubmit="return confirm('Are you sure you want to delete this project?');"
+                >
+                  <button type="submit" class="delete-btn">
+                    <i class="fas fa-trash\"></i>
+                  </button>
+                </form>
+                <h6>{{ proj.title }}</h6>
+                <p>{{ proj.description }}</p>
+                <p><a href="{{ proj.link }}" target="_blank">{{ proj.link }}</a></p>
+              </div>
+              {% endfor %}
+            {% else %}
+              <p class="text-muted">No projects added yet.</p>
+            {% endif %}
+            <button
+              type="button"
+              class="btn btn-outline-primary mb-4"
+              data-bs-toggle="modal"
+              data-bs-target="#projectModal"
+              onclick="clearProjectModal()"
+            >
+              <i class="fas fa-plus"></i> Add Project
+            </button>
+
+            <!-- Social/Portfolio Links -->
+            <div class="section-title">Social / Portfolio Links</div>
+            {% if profile.social_urls %}
+              {% for link in profile.social_urls %}
+              <div class="card-small" data-link-id="{{ loop.index }}">
+                <button
+                  type="button"
+                  class="edit-btn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#socialLinkModal"
+                  data-id="{{ loop.index }}"
+                  data-url="{{ link }}"
+                >
+                  <i class="fas fa-edit\"></i>
+                </button>
+                <form
+                  method="POST"
+                  action="{{ url_for('profile.delete_social_link', link_id=loop.index) }}"
+                  style="display: inline;"
+                  onsubmit="return confirm('Are you sure you want to delete this link?');"
+                >
+                  <button type="submit" class="delete-btn">
+                    <i class="fas fa-trash\"></i>
+                  </button>
+                </form>
+                <p><a href="{{ link }}" target="_blank">{{ link }}</a></p>
+              </div>
+              {% endfor %}
+            {% else %}
+              <p class="text-muted">No social links added yet.</p>
+            {% endif %}
+            <button
+              type="button"
+              class="btn btn-outline-primary mb-4"
+              data-bs-toggle="modal"
+              data-bs-target="#socialLinkModal"
+              onclick="clearSocialModal()"
+            >
+              <i class="fas fa-plus\"></i> Add Social Link
+            </button>
+
+            <!-- Skills -->
+            <div class="section-title">Skills (comma-separated)</div>
+            <div class="mb-3">
+              <input
+                type="text"
+                name="skills"
+                class="form-control"
+                value="{{ profile.skills }}"
+                placeholder="e.g. Python, JavaScript, SQL"
+              />
+            </div>
+
+            <!-- Languages -->
+            <div class="section-title">Languages (comma-separated)</div>
+            <div class="mb-3">
+              <input
+                type="text"
+                name="languages"
+                class="form-control"
+                value="{{ profile.languages }}"
+                placeholder="e.g. English, Spanish"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Buttons -->
+        <div class="card-footer d-flex justify-content-between">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save\"></i> Save Resume
+          </button>
+          <a href="{{ url_for('index') }}" class="btn btn-secondary">
+            <i class="fas fa-times\"></i> Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- ===================== -->
+  <!-- MODAL: Work Experience -->
+  <!-- ===================== -->
+  <div class="modal fade" id="workExperienceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <!-- For Add or Edit -->
+      <form
+        method="POST"
+        id="workExperienceForm"
+        action="{{ url_for('profile.add_work_experience') }}"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Work Experience</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="wexp_id" id="wexp_id" value="" />
+            <!-- Company -->
+            <div class="mb-3">
+              <label class="form-label">Company</label>
+              <input
+                type="text"
+                class="form-control"
+                name="company"
+                id="work_company"
+                placeholder="e.g. Self-Study, Google..."
+              />
+            </div>
+            <!-- Location -->
+            <div class="mb-3">
+              <label class="form-label">Location</label>
+              <input
+                type="text"
+                class="form-control"
+                name="location"
+                id="work_location"
+                placeholder="e.g. Virginia Beach, VA, USA"
+              />
+            </div>
+            <!-- Position Title -->
+            <div class="mb-3">
+              <label class="form-label">Position Title</label>
+              <input
+                type="text"
+                class="form-control"
+                name="position_title"
+                id="work_position_title"
+                placeholder="e.g. Intern, Developer..."
+              />
+            </div>
+            <!-- Experience Type -->
+            <div class="mb-3">
+              <label class="form-label">Experience Type</label>
+              <select class="form-select" name="experience_type" id="work_experience_type">
+                <option value="Part-Time">Part-Time</option>
+                <option value="Full-Time">Full-Time</option>
+                <option value="Contract">Contract</option>
+              </select>
+            </div>
+            <!-- Start/End Month/Year -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Start Month</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="start_month"
+                  id="work_start_month"
+                  placeholder="e.g. November"
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Start Year</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="start_year"
+                  id="work_start_year"
+                  placeholder="e.g. 2024"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">End Month</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="end_month"
+                  id="work_end_month"
+                  placeholder="e.g. November"
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">End Year</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="end_year"
+                  id="work_end_year"
+                  placeholder="e.g. 2025"
+                />
+              </div>
+            </div>
+            <div class="form-check mb-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                name="currently_work_here"
+                id="work_currentlyWorkHere"
+              />
+              <label class="form-check-label" for="work_currentlyWorkHere">
+                I currently work here
+              </label>
+            </div>
+            <!-- Description -->
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea
+                class="form-control"
+                name="description"
+                id="work_description"
+                rows="3"
+                placeholder="Enter responsibilities, achievements..."
+              ></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- MODAL: Academic Experience   -->
+  <!-- ============================= -->
+  <div class="modal fade" id="academicExperienceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <form
+        method="POST"
+        id="academicExperienceForm"
+        action="{{ url_for('profile.add_academic_experience') }}"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Academic Experience</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="aexp_id" id="aexp_id" value="" />
+            <!-- Institution -->
+            <div class="mb-3">
+              <label class="form-label">Institution</label>
+              <input
+                type="text"
+                class="form-control"
+                name="company"
+                id="academic_company"
+                placeholder="e.g. Old Dominion University"
+              />
+            </div>
+            <!-- Location -->
+            <div class="mb-3">
+              <label class="form-label">Location</label>
+              <input
+                type="text"
+                class="form-control"
+                name="location"
+                id="academic_location"
+                placeholder="e.g. Norfolk, VA, USA"
+              />
+            </div>
+            <!-- Position Title -->
+            <div class="mb-3">
+              <label class="form-label">Position Title</label>
+              <input
+                type="text"
+                class="form-control"
+                name="position_title"
+                id="academic_position_title"
+                placeholder="e.g. Research Assistant"
+              />
+            </div>
+            <!-- Experience Type -->
+            <div class="mb-3">
+              <label class="form-label">Experience Type</label>
+              <select
+                class="form-select"
+                name="experience_type"
+                id="academic_experience_type"
+              >
+                <option value="Full-Time">Full-Time</option>
+                <option value="Part-Time">Part-Time</option>
+              </select>
+            </div>
+            <!-- Start/End Month/Year -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Start Month</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="start_month"
+                  id="academic_start_month"
+                  placeholder="e.g. August"
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Start Year</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="start_year"
+                  id="academic_start_year"
+                  placeholder="e.g. 2019"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">End Month</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="end_month"
+                  id="academic_end_month"
+                  placeholder="e.g. May"
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">End Year</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="end_year"
+                  id="academic_end_year"
+                  placeholder="e.g. 2021"
+                />
+              </div>
+            </div>
+            <div class="form-check mb-3">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                name="currently_work_here"
+                id="academic_currentlyWorkHere"
+              />
+              <label class="form-check-label" for="academic_currentlyWorkHere">
+                I currently work here
+              </label>
+            </div>
+            <!-- Description -->
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea
+                class="form-control"
+                name="description"
+                id="academic_description"
+                rows="3"
+                placeholder="e.g. Research Assistantship..."
+              ></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== -->
+  <!-- MODAL: Education -->
+  <!-- ===================== -->
+  <div class="modal fade" id="educationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <form
+        method="POST"
+        id="educationForm"
+        action="{{ url_for('profile.add_education') }}"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Education</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="edu_id" id="edu_id" value="" />
+            <!-- School Name -->
+            <div class="mb-3">
+              <label class="form-label">School Name</label>
+              <input
+                type="text"
+                class="form-control"
+                name="school_name"
+                id="edu_school_name"
+                placeholder="e.g. Other / ODU / etc."
+              />
+            </div>
+            <!-- New School Name -->
+            <div class="mb-3">
+              <label class="form-label">New School Name</label>
+              <input
+                type="text"
+                class="form-control"
+                name="new_school_name"
+                id="edu_new_school_name"
+                placeholder="If 'Other', specify here"
+              />
+            </div>
+            <!-- Major -->
+            <div class="mb-3">
+              <label class="form-label">Major</label>
+              <input
+                type="text"
+                class="form-control"
+                name="major"
+                id="edu_major"
+                placeholder="e.g. Computer Engineering"
+              />
+            </div>
+            <!-- Degree Type -->
+            <div class="mb-3">
+              <label class="form-label">Degree Type</label>
+              <input
+                type="text"
+                class="form-control"
+                name="degree_type"
+                id="edu_degree_type"
+                placeholder="e.g. Master's, Bachelor's"
+              />
+            </div>
+            <!-- GPA -->
+            <div class="mb-3">
+              <label class="form-label">GPA</label>
+              <input
+                type="text"
+                class="form-control"
+                name="gpa"
+                id="edu_gpa"
+                placeholder="e.g. 3.5"
+              />
+            </div>
+            <!-- Start/End Month/Year -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Start Month</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="start_month"
+                  id="edu_start_month"
+                  placeholder="e.g. August"
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Start Year</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="start_year"
+                  id="edu_start_year"
+                  placeholder="e.g. 2011"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">End Month</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="end_month"
+                  id="edu_end_month"
+                  placeholder="e.g. July"
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">End Year</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="end_year"
+                  id="edu_end_year"
+                  placeholder="e.g. 2013"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== -->
+  <!-- MODAL: Publication -->
+  <!-- ===================== -->
+  <div class="modal fade" id="publicationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <form
+        method="POST"
+        id="publicationForm"
+        action="{{ url_for('profile.add_publication') }}"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Publication</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="pub_id" id="pub_id" value="" />
+            <!-- Title -->
+            <div class="mb-3">
+              <label class="form-label">Title</label>
+              <input
+                type="text"
+                class="form-control"
+                name="title"
+                id="pub_title"
+                placeholder="Enter publication title"
+              />
+            </div>
+            <!-- Authors -->
+            <div class="mb-3">
+              <label class="form-label">Authors</label>
+              <input
+                type="text"
+                class="form-control"
+                name="authors"
+                id="pub_authors"
+                placeholder="Enter authors"
+              />
+            </div>
+            <!-- Link -->
+            <div class="mb-3">
+              <label class="form-label">Link</label>
+              <input
+                type="url"
+                class="form-control"
+                name="link"
+                id="pub_link"
+                placeholder="Enter publication link"
+              />
+            </div>
+            <!-- Year -->
+            <div class="mb-3">
+              <label class="form-label">Year</label>
+              <input
+                type="text"
+                class="form-control"
+                name="year"
+                id="pub_year"
+                placeholder="Enter publication year"
+              />
+            </div>
+            <!-- Publisher -->
+            <div class="mb-3">
+              <label class="form-label">Publisher</label>
+              <input
+                type="text"
+                class="form-control"
+                name="publisher"
+                id="pub_publisher"
+                placeholder="Enter publisher"
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Save Publication</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== -->
+  <!-- MODAL: Project -->
+  <!-- ===================== -->
+  <div class="modal fade" id="projectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <form
+        method="POST"
+        id="projectForm"
+        action="{{ url_for('profile.add_project') }}"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Project</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="project_id" id="project_id" value="" />
+            <div class="mb-3">
+              <label class="form-label">Project Title</label>
+              <input
+                type="text"
+                class="form-control"
+                name="project_title"
+                id="proj_title"
+                placeholder="Enter project title"
+              />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Project Description</label>
+              <textarea
+                class="form-control"
+                name="project_description"
+                id="proj_description"
+                rows="3"
+                placeholder="Enter project description"
+              ></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Project Link</label>
+              <input
+                type="url"
+                class="form-control"
+                name="project_link"
+                id="proj_link"
+                placeholder="Enter project link"
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Save Project</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== -->
+  <!-- MODAL: Social Link -->
+  <!-- ===================== -->
+  <div class="modal fade" id="socialLinkModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <form
+        method="POST"
+        id="socialForm"
+        action="{{ url_for('profile.add_social_link') }}"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Social / Portfolio Link</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="link_id" id="link_id" value="" />
+            <div class="mb-3">
+              <label class="form-label">Link</label>
+              <input
+                type="url"
+                class="form-control"
+                name="social_url"
+                id="social_url"
+                placeholder="Enter URL (e.g., LinkedIn, GitHub, Portfolio)"
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Save Link</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Clear forms when adding a new item
+    function clearWorkExpModal() {
+      document.getElementById('workExperienceForm').action = "{{ url_for('profile.add_work_experience') }}"
+      document.getElementById('wexp_id').value = ''
+      document.getElementById('work_company').value = ''
+      document.getElementById('work_location').value = ''
+      document.getElementById('work_position_title').value = ''
+      document.getElementById('work_experience_type').value = 'Part-Time'
+      document.getElementById('work_start_month').value = ''
+      document.getElementById('work_start_year').value = ''
+      document.getElementById('work_end_month').value = ''
+      document.getElementById('work_end_year').value = ''
+      document.getElementById('work_currentlyWorkHere').checked = false
+      document.getElementById('work_description').value = ''
+      document.querySelector('#workExperienceModal .modal-title').textContent = 'Add Work Experience'
+    }
+
+    function clearAcademicExpModal() {
+      document.getElementById('academicExperienceForm').action = "{{ url_for('profile.add_academic_experience') }}"
+      document.getElementById('aexp_id').value = ''
+      document.getElementById('academic_company').value = ''
+      document.getElementById('academic_location').value = ''
+      document.getElementById('academic_position_title').value = ''
+      document.getElementById('academic_experience_type').value = 'Full-Time'
+      document.getElementById('academic_start_month').value = ''
+      document.getElementById('academic_start_year').value = ''
+      document.getElementById('academic_end_month').value = ''
+      document.getElementById('academic_end_year').value = ''
+      document.getElementById('academic_currentlyWorkHere').checked = false
+      document.getElementById('academic_description').value = ''
+      document.querySelector('#academicExperienceModal .modal-title').textContent = 'Add Academic Experience'
+    }
+
+    function clearEducationModal() {
+      document.getElementById('educationForm').action = "{{ url_for('profile.add_education') }}"
+      document.getElementById('edu_id').value = ''
+      document.getElementById('edu_school_name').value = ''
+      document.getElementById('edu_new_school_name').value = ''
+      document.getElementById('edu_major').value = ''
+      document.getElementById('edu_degree_type').value = ''
+      document.getElementById('edu_gpa').value = ''
+      document.getElementById('edu_start_month').value = ''
+      document.getElementById('edu_start_year').value = ''
+      document.getElementById('edu_end_month').value = ''
+      document.getElementById('edu_end_year').value = ''
+      document.querySelector('#educationModal .modal-title').textContent = 'Add Education'
+    }
+
+    function clearPublicationModal() {
+      document.getElementById('publicationForm').action = "{{ url_for('profile.add_publication') }}"
+      document.getElementById('pub_id').value = ''
+      document.getElementById('pub_title').value = ''
+      document.getElementById('pub_authors').value = ''
+      document.getElementById('pub_link').value = ''
+      document.getElementById('pub_year').value = ''
+      document.getElementById('pub_publisher').value = ''
+      document.querySelector('#publicationModal .modal-title').textContent = 'Add Publication'
+    }
+
+    function clearProjectModal() {
+      document.getElementById('projectForm').action = "{{ url_for('profile.add_project') }}"
+      document.getElementById('project_id').value = ''
+      document.getElementById('proj_title').value = ''
+      document.getElementById('proj_description').value = ''
+      document.getElementById('proj_link').value = ''
+      document.querySelector('#projectModal .modal-title').textContent = 'Add Project'
+    }
+
+    function clearSocialModal() {
+      document.getElementById('socialForm').action = "{{ url_for('profile.add_social_link') }}"
+      document.getElementById('link_id').value = ''
+      document.getElementById('social_url').value = ''
+      document.querySelector('#socialLinkModal .modal-title').textContent = 'Add Social / Portfolio Link'
+    }
+
+    // On document ready
+    document.addEventListener('DOMContentLoaded', function () {
+      // Work Experience Edit Buttons
+      document.querySelectorAll('[data-wexp-id] .edit-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const wexpId = btn.getAttribute('data-id')
+          const company = btn.getAttribute('data-company')
+          const location = btn.getAttribute('data-location')
+          const position_title = btn.getAttribute('data-position_title')
+          const experience_type = btn.getAttribute('data-experience_type')
+          const start_month = btn.getAttribute('data-start_month')
+          const start_year = btn.getAttribute('data-start_year')
+          const end_month = btn.getAttribute('data-end_month')
+          const end_year = btn.getAttribute('data-end_year')
+          const currentlyWorkHere = btn.getAttribute('data-currently_work_here')
+          const description = btn.getAttribute('data-description')
+
+          // Switch form action to edit
+          document.getElementById('workExperienceForm').action = "{{ url_for('profile.edit_work_experience') }}"
+          document.querySelector('#workExperienceModal .modal-title').textContent = 'Edit Work Experience'
+
+          // Populate fields
+          document.getElementById('wexp_id').value = wexpId
+          document.getElementById('work_company').value = company
+          document.getElementById('work_location').value = location
+          document.getElementById('work_position_title').value = position_title
+          document.getElementById('work_experience_type').value = experience_type
+          document.getElementById('work_start_month').value = start_month
+          document.getElementById('work_start_year').value = start_year
+          document.getElementById('work_end_month').value = end_month
+          document.getElementById('work_end_year').value = end_year
+          document.getElementById('work_currentlyWorkHere').checked = (currentlyWorkHere === 'True')
+          document.getElementById('work_description').value = description
+        })
+      })
+
+      // Academic Experience Edit Buttons
+      document.querySelectorAll('[data-aexp-id] .edit-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const aexpId = btn.getAttribute('data-id')
+          const company = btn.getAttribute('data-company')
+          const location = btn.getAttribute('data-location')
+          const position_title = btn.getAttribute('data-position_title')
+          const experience_type = btn.getAttribute('data-experience_type')
+          const start_month = btn.getAttribute('data-start_month')
+          const start_year = btn.getAttribute('data-start_year')
+          const end_month = btn.getAttribute('data-end_month')
+          const end_year = btn.getAttribute('data-end_year')
+          const currentlyWorkHere = btn.getAttribute('data-currently_work_here')
+          const description = btn.getAttribute('data-description')
+
+          document.getElementById('academicExperienceForm').action = "{{ url_for('profile.edit_academic_experience') }}"
+          document.querySelector('#academicExperienceModal .modal-title').textContent = 'Edit Academic Experience'
+
+          document.getElementById('aexp_id').value = aexpId
+          document.getElementById('academic_company').value = company
+          document.getElementById('academic_location').value = location
+          document.getElementById('academic_position_title').value = position_title
+          document.getElementById('academic_experience_type').value = experience_type
+          document.getElementById('academic_start_month').value = start_month
+          document.getElementById('academic_start_year').value = start_year
+          document.getElementById('academic_end_month').value = end_month
+          document.getElementById('academic_end_year').value = end_year
+          document.getElementById('academic_currentlyWorkHere').checked = (currentlyWorkHere === 'True')
+          document.getElementById('academic_description').value = description
+        })
+      })
+
+      // Education Edit Buttons
+      document.querySelectorAll('[data-edu-id] .edit-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const eduId = btn.getAttribute('data-id')
+          const school_name = btn.getAttribute('data-school_name')
+          const new_school_name = btn.getAttribute('data-new_school_name')
+          const major = btn.getAttribute('data-major')
+          const degree_type = btn.getAttribute('data-degree_type')
+          const gpa = btn.getAttribute('data-gpa')
+          const start_month = btn.getAttribute('data-start_month')
+          const start_year = btn.getAttribute('data-start_year')
+          const end_month = btn.getAttribute('data-end_month')
+          const end_year = btn.getAttribute('data-end_year')
+
+          document.getElementById('educationForm').action = "{{ url_for('profile.edit_education') }}"
+          document.querySelector('#educationModal .modal-title').textContent = 'Edit Education'
+
+          document.getElementById('edu_id').value = eduId
+          document.getElementById('edu_school_name').value = school_name
+          document.getElementById('edu_new_school_name').value = new_school_name
+          document.getElementById('edu_major').value = major
+          document.getElementById('edu_degree_type').value = degree_type
+          document.getElementById('edu_gpa').value = gpa
+          document.getElementById('edu_start_month').value = start_month
+          document.getElementById('edu_start_year').value = start_year
+          document.getElementById('edu_end_month').value = end_month
+          document.getElementById('edu_end_year').value = end_year
+        })
+      })
+
+      // Publication Edit Buttons
+      document.querySelectorAll('[data-pub-id] .edit-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const pubId = btn.getAttribute('data-id')
+          const title = btn.getAttribute('data-title')
+          const authors = btn.getAttribute('data-authors')
+          const link = btn.getAttribute('data-link')
+          const year = btn.getAttribute('data-year')
+          const publisher = btn.getAttribute('data-publisher')
+
+          document.getElementById('publicationForm').action = "{{ url_for('profile.edit_publication') }}"
+          document.querySelector('#publicationModal .modal-title').textContent = 'Edit Publication'
+
+          document.getElementById('pub_id').value = pubId
+          document.getElementById('pub_title').value = title
+          document.getElementById('pub_authors').value = authors
+          document.getElementById('pub_link').value = link
+          document.getElementById('pub_year').value = year
+          document.getElementById('pub_publisher').value = publisher
+        })
+      })
+
+      // Project Edit Buttons
+      document.querySelectorAll('[data-proj-id] .edit-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const projId = btn.getAttribute('data-id')
+          const title = btn.getAttribute('data-title')
+          const description = btn.getAttribute('data-description')
+          const link = btn.getAttribute('data-link')
+
+          document.getElementById('projectForm').action = "{{ url_for('profile.edit_project') }}"
+          document.querySelector('#projectModal .modal-title').textContent = 'Edit Project'
+
+          document.getElementById('project_id').value = projId
+          document.getElementById('proj_title').value = title
+          document.getElementById('proj_description').value = description
+          document.getElementById('proj_link').value = link
+        })
+      })
+
+      // Social Link Edit Buttons
+      document.querySelectorAll('[data-link-id] .edit-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const linkId = btn.getAttribute('data-id')
+          const url = btn.getAttribute('data-url')
+
+          document.getElementById('socialForm').action = "{{ url_for('profile.edit_social_link') }}"
+          document.querySelector('#socialLinkModal .modal-title').textContent = 'Edit Social / Portfolio Link'
+
+          document.getElementById('link_id').value = linkId
+          document.getElementById('social_url').value = url
+        })
+      })
+    })
+  </script>
+</body>
+</html>

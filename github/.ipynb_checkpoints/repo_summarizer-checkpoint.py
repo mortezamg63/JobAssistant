@@ -1,0 +1,77 @@
+import os
+from github import Github
+from openai import OpenAI
+from dotenv import load_dotenv
+
+class GitHubRepoSummarizer:
+    def __init__(self):
+        load_dotenv()
+        self.access_token = os.getenv("GITHUB_TOKEN")
+        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.gpt = OpenAI(api_key=self.api_key)
+        self.github = Github(self.access_token)
+        self.system_prompt = (
+            "You are a helpful assistant that summarizes the projects of a GitHub repository. "
+            "If you are not able to summarize the code, just return 'No summary available'. "
+            "If the content of the file is not README or code related, just return 'No summary available'."
+        )
+
+    def generate_code_summary(self, code):
+        response = self.gpt.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": self.system_prompt},
+                {"role": "user", "content": f"Summarize this code or text:\n{code[:3000]}"}
+            ]
+        )
+        return response.choices[0].message.content
+
+    def generate_project_summary(self, file_summaries):
+        summaries = "\n".join(file_summaries)
+        response = self.gpt.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": self.system_prompt},
+                {"role": "user", "content": f"Here are the file summaries:\n{summaries}"}
+            ]
+        )
+        return response.choices[0].message.content
+
+    def save_repo_report(self, repo_name, content):
+        filename = f"{repo_name}_report.txt"
+        with open(filename, "w", encoding="utf-8") as f:
+            f.write(content)
+
+    def analyze_repository(self, repo_full_name):
+        try:
+            repo = self.github.get_repo(repo_full_name)
+        except Exception as e:
+            return f"Error accessing repository: {e}"
+
+        contents = repo.get_contents("")
+        file_summaries = []
+
+        while contents:
+            file_content = contents.pop(0)
+            if file_content.type == "dir":
+                contents.extend(repo.get_contents(file_content.path))
+            elif file_content.size < 1000000:
+                try:
+                    content = file_content.decoded_content.decode()
+                    summary = self.generate_code_summary(content)
+                    if summary != 'No summary available':
+                        file_summaries.append(f"{file_content.path}: {summary}")
+                except Exception:
+                    continue
+
+        if file_summaries:
+            project_summary = self.generate_project_summary(file_summaries)
+            self.save_repo_report(repo.name, project_summary)
+            return project_summary
+        else:
+            return "No relevant files found to summarize."
+
+# Example usage (comment out in production if using Flask/HTML UI):
+# summarizer = GitHubRepoSummarizer()
+# summary = summarizer.analyze_repository("mortezamg63/YOLO-Object-Detecton")
+# print(summary)

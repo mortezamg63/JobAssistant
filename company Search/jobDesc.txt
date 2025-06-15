@@ -1,0 +1,20 @@
+About the Job
+We are seeking a motivated AI Intern to join our team and contribute to exciting Projects in machine learning and artificial intelligence. The ideal candidate will have a strong foundation in Web app development and machine learning concepts. This (unpaid) internship provides a unique opportunity to work alongside experienced professionals and gain hands-on experience in developing AI solutions.
+Job Responsibilities
+Assist in the design and implementation of machine learning models.
+Analyze large datasets to extract insights and improve model performance.
+Collaborate with team members on various AI projects, contributing to data preprocessing, model training, and evaluation.
+Participate in brainstorming sessions to identify new areas for AI applications.
+Document processes and results for internal use and reporting.
+Requirements
+Current college student, or recent graduate.
+Applicants must be pursuing or have a completed Bachelor’s degree in Information Technology, Healthcare Technology, or a related field. Those with equivalent work experience will be considered.
+Graduate’s or Currently pursuing a degree in Computer Science, Information technology, Machine Learning, or a related field.
+Familiarity with machine learning framework and web applications.
+Proficiency in programming languages such as, Web application.
+Basic understanding of AI and machine learning techniques.
+Strong problem-solving skills and a willingness to learn.
+Excellent communication and teamwork abilities.
+Preferred Qualifications
+AI / Machine knowledge is required.
+A good hands on knowledge of web applications is good.

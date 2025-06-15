@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Luxury Chatbot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='luxury.css') }}" />
+</head>
+<body>
+  <div class="chat-wrapper">
+    <div class="chat-header">
+      <img src="{{ url_for('static', filename='chat-icon.png') }}" class="chat-icon" alt="Chat Icon" />
+      <span class="chat-title">Mory’s virtual Assistant</span>
+    </div>
+
+    <div class="chat-box" id="chat-box">
+      <div class="bot-msg">Hey there! I’m Mory’s AI-powered digital twin 🧠 <br> Feel free to ask me anything about Mory’s background.</div>
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="user-input" placeholder="Type your message..." />
+      <button onclick="sendMessage()">SEND</button>
+    </div>
+  </div>
+
+  <script>
+    function sendMessage() {
+      const input = document.getElementById("user-input");
+      const chatBox = document.getElementById("chat-box");
+      if (!input.value.trim()) return;
+
+      const userMsg = document.createElement("div");
+      userMsg.className = "user-msg";
+      userMsg.textContent = input.value;
+      chatBox.appendChild(userMsg);
+
+      fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input.value }),
+      })
+        .then(res => res.json())
+        .then((data) => {
+          const botMsg = document.createElement("div");
+          botMsg.className = "bot-msg";
+          botMsg.textContent = data.response;
+          chatBox.appendChild(botMsg);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
+      input.value = "";
+    }
+
+    document.getElementById("user-input").addEventListener("keypress", function (e) {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+The project is focused on implementing a YOLO (You Only Look Once) object detection system using two key frameworks: TensorFlow and OpenCV. It supports both the full YOLO v3 model and the smaller YOLO v3 Tiny version. 
+
+- With TensorFlow, the project includes scripts to convert model weights into formats suitable for TensorFlow execution (ckpt or pb), and utilizes GPU resources to perform object detection on video frames, saving detected objects as cropped images. TensorFlow scripts also offer the capability to run inference using a frozen graph or checkpoint model.
+
+- The OpenCV implementation concentrates on utilizing a pre-trained YOLO model for real-time object detection by leveraging the `dnn` module of OpenCV. This involves capturing video frames, processing them to detect objects, and subsequently displaying results with bounding boxes.
+
+Each implementation contains a main entry point script to execute the detection process based on configurations set in a separate settings file. Additionally, utilities are provided for network processing and bounding box management, ensuring robust object detection performance across various input media.

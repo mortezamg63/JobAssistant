@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mory's Repo Summarizer</title>
+  <link rel="stylesheet" href="/static/luxury.css">
+</head>
+<body>
+  <div class="chat-wrapper">
+    <div class="chat-header">
+      <img src="/static/chat-icon.png" class="chat-icon" alt="Chat Icon" />
+      <span class="chat-title">Mory Gharasuie — AI-Powered Career Assistant</span>
+    </div>
+
+    <form id="repo-form" class="input-group" action="/summarize" method="POST">
+      <input type="text" name="repo_url" id="repo_url" placeholder="Enter GitHub repo (e.g. mortezamg63/YOLO-Object-Detecton)" required />
+      <button type="submit">SUMMARIZE</button>
+    </form>
+
+    <div class="chat-box" id="summary-box">
+      {% if summary %}
+        <div class="bot-msg">{{ summary }}</div>
+      {% elif error %}
+        <div class="bot-msg">⚠️ {{ error }}</div>
+      {% else %}
+        <div class="bot-msg"></div>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

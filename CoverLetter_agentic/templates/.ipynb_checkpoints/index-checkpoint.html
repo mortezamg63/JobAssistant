@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Cover Letter Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      background: #0b1c2f;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px;
+      color: #f5e9d7;
+    }
+
+    .form-wrapper {
+      background: #101e33;
+      width: 760px;
+      padding: 36px;
+      border-radius: 24px;
+      border: 1.5px solid rgba(255, 215, 0, 0.25);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.08);
+    }
+
+    .form-title {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #f5e9d7;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #ffe082;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    textarea {
+      width: 100%;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      border: 1px solid #425063;
+      background: #0f1a2a;
+      color: #f5e9d7;
+      font-size: 1rem;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #aaa;
+    }
+
+    button {
+      width: 100%;
+      background: linear-gradient(135deg, #284466, #0c2a4d);
+      border: 1px solid #3c5774;
+      color: #f5e9d7;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #3d6b97, #163b5e);
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin: 20px 0;
+    }
+
+    .output-box {
+      background: #0d1827;
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid #3a4a5a;
+      white-space: pre-wrap;
+      font-size: 1.05rem;
+      color: #f5e9d7;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-wrapper">
+    <div class="form-title">🎯 AI Cover Letter Generator</div>
+    <form method="POST" enctype="multipart/form-data">
+      <hr>
+      <h4>👤 Personal Info</h4>
+      <label for="fullname">Full Name</label>
+      <input type="text" name="fullname" value="{{fullname}}" placeholder="Your full name" />
+
+      <label for="phone">Phone Number</label>
+      <input type="text" name="phone" value="{{phone}}" placeholder="e.g. +1 234 567 8901" />
+
+      <label for="linkedin_link">LinkedIn Link</label>
+      <input type="text" name="linkedin_link" value="{{linkedin}}" placeholder="https://linkedin.com/in/..." />
+
+      <label for="github_link">GitHub Link</label>
+      <input type="text" name="github_link" value="{{github}}" placeholder="https://github.com/..." />
+
+      <hr>
+      <h4>💼 Job Info</h4>
+      <label for="job_description">📝 Job Description</label>
+      <textarea name="job_description" rows="5" required placeholder="Paste job description here...">{{job_desc}}</textarea>
+
+      <label for="company_name">🏢 Company Name</label>
+      <input type="text" name="company_name" value="{{company_name or ''}}" placeholder="Company name" />
+
+      <label for="company_address">📍 Company Address</label>
+      <input type="text" name="company_address" value="{{company_address or ''}}" placeholder="Company address" />
+
+      <hr>
+      <h4>📄 Resume</h4>
+      <label for="resume_text">Your Resume (paste as plain text)</label>
+      <textarea name="resume_text" rows="5" required placeholder="Paste your resume here...">{{resume}}</textarea>
+
+      <button type="submit">✨ Generate Cover Letter</button>
+    </form>
+
+    {% if output %}
+    <hr>
+    <h4 class="text-success">✅ Generated Cover Letter:</h4>
+    <div class="output-box">
+      {{ output }}
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+/* Floating panel container */
+#jobSaverContainer {
+  position: fixed;
+  top: 80px;
+  right: 40px;
+  width: 380px;
+  max-height: 80vh;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  z-index: 999999; /* ensure it's on top */
+  overflow-y: auto;
+  padding: 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header styling */
+#jobSaverHeader {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+  position: relative;
+}
+
+/* Close button styling */
+#jobSaverClose {
+  position: absolute;
+  top: 0;
+  right: 8px;
+  font-size: 28px;
+  cursor: pointer;
+  color: #666;
+}
+
+/* Form group spacing */
+#jobSaverForm .form-group {
+  margin-bottom: 15px;
+}
+
+/* Input, select, textarea styling */
+#jobSaverForm input,
+#jobSaverForm select,
+#jobSaverForm textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+}
+
+#jobSaverForm textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* Save button styling */
+#jobSaverForm button.save-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #0d6efd;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+}
+
+#jobSaverForm button.save-btn:hover {
+  background-color: #0b5ed7;
+}

@@ -1,0 +1,8 @@
+Here is my resume JSON:
+```json
+{resume}
+
+Here is the full job description:
+{job_description}
+
+Please analyze and return only valid JSON matching the ResumeMatchOutput schema.

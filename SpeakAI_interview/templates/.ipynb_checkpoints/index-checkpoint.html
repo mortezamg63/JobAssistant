@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🎤 AI Interview Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-900 text-white flex justify-center pt-10 min-h-screen">
+
+  <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-2xl flex flex-col gap-6 h-[90vh] overflow-hidden">
+    <h1 class="text-3xl font-semibold text-center">🧠 AI Interview Assistant</h1>
+
+    <!-- Chatbox -->
+    <div id="chatbox" class="flex-grow overflow-y-auto bg-gray-700 p-4 rounded-lg text-sm space-y-4"></div>
+
+    <!-- Job Description -->
+    <div class="mb-2">
+      <label for="jobDesc" class="block text-sm font-medium mb-1">📋 Job Description:</label>
+      <textarea id="jobDesc" rows="3"
+        placeholder="Paste the job description here..."
+        class="w-full p-3 text-gray-100 bg-gray-700 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+      ></textarea>
+    </div>
+
+    <!-- Resume Upload -->
+    <div class="mb-2">
+      <label for="resumeInput" class="block text-sm font-medium mb-1">📄 Upload Resume:</label>
+      <input type="file" id="resumeInput" accept=".pdf,.doc,.docx,.txt"
+             class="w-full text-gray-900 p-2 rounded bg-white" />
+      <button id="uploadResumeBtn"
+              class="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Upload Resume and Job Description
+      </button>
+    </div>
+
+    <!-- Record Button -->
+    <div class="flex justify-center">
+      <button id="recordButton"
+              class="bg-red-500 px-4 py-3 text-lg rounded-full hover:bg-red-600 w-full max-w-xs">
+        🎤 Hold to Record
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let mediaRecorder;
+    let audioChunks = [];
+
+    const recordButton = document.getElementById("recordButton");
+    const uploadResumeBtn = document.getElementById("uploadResumeBtn");
+    const resumeInput = document.getElementById("resumeInput");
+
+    function startRecording() {
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.start();
+
+        recordButton.textContent = "🎙️ Recording...";
+        recordButton.classList.replace("bg-red-500", "bg-green-500");
+
+        mediaRecorder.ondataavailable = event => {
+          audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+          uploadAudio(audioBlob);
+          audioChunks = [];
+        };
+      }).catch(error => {
+        console.error("Mic error:", error);
+        alert("Microphone access denied.");
+      });
+    }
+
+    function stopRecording() {
+      if (mediaRecorder) {
+        mediaRecorder.stop();
+        recordButton.textContent = "🎤 Hold to Record";
+        recordButton.classList.replace("bg-green-500", "bg-red-500");
+      }
+    }
+
+    function uploadAudio(audioBlob) {
+      const formData = new FormData();
+      formData.append("audio", audioBlob, "audio.wav");
+    
+      fetch("/upload_audio", {
+        method: "POST",
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.audio_url && data.response_audio_url) {
+          addAudioMessage(data.audio_url, data.response_audio_url, data.timestamp);
+        }
+      });
+    }
+
+
+   function addAudioMessage(audioUrl, responseAudioUrl, timestamp) {
+        const chatbox = document.getElementById("chatbox");
+    
+        // User message container
+        const userMsg = document.createElement("div");
+        userMsg.className = "p-3 bg-blue-500 rounded-lg mb-4";
+        
+        // User label with timestamp
+        const userLabel = document.createElement("div");
+        userLabel.className = "text-xs text-gray-200 mb-1";
+        userLabel.textContent = `${formatTime(timestamp)} - You:`;
+        userMsg.appendChild(userLabel);
+    
+        // User audio element
+        const userAudio = document.createElement("audio");
+        userAudio.src = audioUrl;
+        userAudio.controls = true;
+        userAudio.className = "w-full";
+        userMsg.appendChild(userAudio);
+    
+        // Bot message container
+        const botMsg = document.createElement("div");
+        botMsg.className = "p-3 bg-gray-600 rounded-lg mb-4";
+        
+        // Bot label with timestamp
+        const botLabel = document.createElement("div");
+        botLabel.className = "text-xs text-gray-300 mb-1";
+        botLabel.textContent = `${formatTime(timestamp)} - Bot's Response:`;
+        botMsg.appendChild(botLabel);
+    
+        // Bot audio element
+        const botAudio = document.createElement("audio");
+        botAudio.src = responseAudioUrl;
+        botAudio.controls = true;
+        botAudio.className = "w-full";
+        botMsg.appendChild(botAudio);
+    
+        // Add both messages to chatbox
+        chatbox.appendChild(userMsg);
+        chatbox.appendChild(botMsg);
+    
+        // Scroll to bottom
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+
+
+    function formatTime(ts) {
+      return new Date(ts * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function uploadResume() {
+      const file = resumeInput.files[0];
+      if (!file) {
+        alert("Please select a resume file.");      
+       return;
+      }
+
+         const jobDesc = document.getElementById("jobDesc").value.trim();
+         if (!jobDesc) {
+            alert("⚠️ Please enter a job description.");
+            return;
+          }
+
+      const formData = new FormData();
+      formData.append("resume", file);
+      formData.append("job_description", jobDesc);
+    
+      fetch("/upload_resume", {
+        method: "POST",
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert("✅ Resume and job description uploaded successfully!");
+          } else {
+            alert("⚠️ Upload failed: " + data.error);
+          }
+        })
+        .catch(error => {
+          console.error("Upload error:", error);
+          alert("⚠️ Unexpected error during upload.");
+        })
+    }
+
+    uploadResumeBtn.addEventListener("click", uploadResume);
+    recordButton.addEventListener("mousedown", startRecording);
+    recordButton.addEventListener("mouseup", stopRecording);
+    recordButton.addEventListener("touchstart", startRecording);
+    recordButton.addEventListener("touchend", stopRecording);
+  </script>
+</body>
+</html>

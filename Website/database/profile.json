@@ -1,0 +1,163 @@
+{
+    "educations": [
+        {
+            "school_name": "Old Dominion University",
+            "new_school_name": "",
+            "major": "Computer Science",
+            "degree_type": "PhD",
+            "gpa": "3.87",
+            "start_month": "August",
+            "start_year": "2019",
+            "end_month": "Dec",
+            "end_year": "2025"
+        },
+        {
+            "school_name": "University of NabiAkram",
+            "new_school_name": "",
+            "major": "Computer Engineering-Artificial Intelligence",
+            "degree_type": "Master's",
+            "gpa": "3.6",
+            "start_month": "August",
+            "start_year": "2011",
+            "end_month": "July",
+            "end_year": "2013"
+        },
+        {
+            "school_name": "University Shapsipoor",
+            "new_school_name": "",
+            "major": "Computer Engineering",
+            "degree_type": "Bachelor",
+            "gpa": "",
+            "start_month": "",
+            "start_year": "",
+            "end_month": "",
+            "end_year": "2008"
+        }
+    ],
+    "last_update": "2025-02-23 14:56:20",
+    "work_experiences": [
+        {
+            "company": "Self-study",
+            "location": "Virginia Beach, VA, USA",
+            "position_title": "self-study",
+            "experience_type": "Part-Time",
+            "start_month": "November",
+            "start_year": "2024",
+            "end_month": "",
+            "end_year": "",
+            "currently_work_here": false,
+            "description": "Pricer (Agentic LLM)| HuggingFace, Pytorch , LangChain, Chormadb, BeautifulSoup, Scikit-learn GitHub An autonomous price estimation framework using LLMs (GPT-4o, Claude, Llama 3.1-8B) and traditional ML models (Random Forest, SVM, Word2Vec). GPT-4o-mini's performance (average price difference) with RAG, improves from 80.9 to 55.57. I fine-tuned Llama3.1-8B and achieved 46.67 average error. I developed an agent that creates an ensemble model combining RAG+GPT-4o-mini, fine-tuned Llama, and Random forest, achieving 54.62 error. I use a Gradio-based UI and integrated Pushover API for real-time deal alerts from DealNews.Com"
+        },
+        {
+            "company": "Other",
+            "location": "Remote",
+            "position_title": "Self-study",
+            "experience_type": "Part-Time",
+            "start_month": "April",
+            "start_year": "2024",
+            "end_month": "",
+            "end_year": "",
+            "currently_work_here": true,
+            "description": "Data Science and Machine Learning Projects \r\nLibraries: Tensorflow, PyTorch, TorchVision, OpenCV Scikit-learn, Seaborn, Matplotlib, Pandas, Git, BeautifulSoup Created and managed a repository featuring data science and machine learning projects. These projects involve working with various datasets, addressing challenges suitable for beginner to intermediate levels in data science.\r\nThe repository includes:\r\n\u2022 Data processing and preprocessing\r\n\u2022 Exploring data analysis (EDA)\r\n\u2022 Feature engineering and selection\r\n\u2022 Machine learning development and evaluation\r\n\u2022 Data visualization and interpretation"
+        },
+        {
+            "company": "Other",
+            "location": "Remote",
+            "position_title": "Self-study",
+            "experience_type": "Part-Time",
+            "start_month": "April",
+            "start_year": "2024",
+            "end_month": "",
+            "end_year": "",
+            "currently_work_here": true,
+            "description": "Large Language Models \r\nIn this repository, I investigate the realm of retrieval-augmented generation (RAG) systems, embedding models, prompt engineering, and fine-tuning large language models. Throughout this journey, I am learning about Generative AI and leveraging some embedding models for practical applications. The repository showcases my ongoing exploration in this exciting field and will be continually updated with new insights and findings"
+        },
+        {
+            "company": "Meedical AI",
+            "location": "Norfolk, VA, USA",
+            "position_title": "AI Developer",
+            "experience_type": "Part-Time",
+            "start_month": "March",
+            "start_year": "2024",
+            "end_month": "August",
+            "end_year": "2024",
+            "currently_work_here": false,
+            "description": "Medical Aid \r\n\r\nLibraries and techniques: OpenAI embedding, LlamaIndex (GPT Index), PdfReader, PdfWriter, JSON\r\n\r\nCollaboration in Developing a ChatBot utilizing Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG) systems to extract information from medical research papers. The system retrieves relevant data based on user prompts and presents it in a structured format, including sections like sources, guideline summaries, next steps, cautions and contraindications, detailed considerations, and alternative scenarios. The project integrates OpenAI embeddings to power the RAG system for efficient information retrieval."
+        },
+        {
+            "company": "Royan",
+            "location": "Qom, Iran",
+            "position_title": "Software Developer",
+            "experience_type": "Full-Time",
+            "start_month": "March",
+            "start_year": "2013",
+            "end_month": "July",
+            "end_year": "2019",
+            "currently_work_here": false,
+            "description": "Software Developer\r\n\u2022 Developing websites for small and medium-sized enterprises.\r\n\u2022 Customizing web-based administration interfaces for applications on Linux server machine (such as chat\r\nserver, FreeRadius server, and Elastix).\r\n\u2022 Enhancing the panels with support for multiple languages and designing them to be more intuitive and\r\nuser-friendly, tailored to meet the specific needs and preferences of the customers."
+        }
+    ],
+    "academic_experiences": [
+        {
+            "company": "Old Dominion University",
+            "location": "Norfolk, VA, USA",
+            "position_title": "Academic Experience",
+            "experience_type": "Full-Time",
+            "start_month": "",
+            "start_year": "",
+            "end_month": "",
+            "end_year": "",
+            "currently_work_here": false,
+            "description": "Research Assistantship\r\n\u2013 Developing applications for mobile and serverless domains by leveraging ML, DL and CV\r\n\u2013 Doing research on Improving the performance of ML and DL models on classification problems for tabular\r\ndata in SSL setting\r\n\u2013 research on mitigating the impact of bias in imbalanced data in training ML and DL models in Image and\r\ntabular domains\r\n\u2022 Teaching Assistantship\r\n\u2013 Programming with C/C++ and Java (CS150, CS250, CS251)\r\n\u2013 Teaching Labs and recitations\r\n\u2013 assignment Development\r\n\u2013 Grading"
+        }
+    ],
+    "publications": [
+        {
+            "title": "SAWTab: Smoothed Adaptive Weighting for Tabular Data in Semi-Supervised Learning",
+            "authors": "Morteza Gharasuie, Fengiao Wang, Omar Sharif, Ravi Mokkamala",
+            "link": "https://link.springer.com/chapter/10.1007/978-981-97-2259-4_24",
+            "year": "2022",
+            "publisher": "PAKDD"
+        },
+        {
+            "title": "Progressive Feature Upgrade in Semi-supervised Learning on Tabular Domain",
+            "authors": "Morteza Mohammady Gharasuie, Fengiao Wang",
+            "link": "https://arxiv.org/pdf/2212.00892",
+            "year": "2022",
+            "publisher": "ICKG"
+        },
+        {
+            "title": "Performance Monitoring for Exercise Movements using Mobile cameras",
+            "authors": "Morteza Mohammady Gharasuie, Noah Jennings, Shubham Jain",
+            "link": "https://dl.acm.org/doi/pdf/10.1145/3469260.3469665",
+            "year": "2021",
+            "publisher": "BodySys"
+        },
+        {
+            "title": "An efficient run-based method for connected component labeling",
+            "authors": "Morteza Mohammadi Gharasuie; Aboozar Gaffari",
+            "link": "https://ieeexplore.ieee.org/abstract/document/7397514",
+            "year": "2015",
+            "publisher": "MVIP"
+        },
+        {
+            "title": "Real-time dynamic hand gesture recognition using hidden Markov models",
+            "authors": "Morteza Mohammadi Gharasuie; Hadi Seyedarabi",
+            "link": "https://ieeexplore.ieee.org/abstract/document/6779977",
+            "year": "MVIP",
+            "publisher": "2013"
+        }
+    ],
+    "projects": [],
+    "first_name": "Morteza",
+    "middle_name": "Mohammady",
+    "last_name": "Gharasuie",
+    "email": "mmoha014@odu.edu",
+    "phone": "7572871602",
+    "address": "1240 Westover Ave, Norfolk, VA, USA",
+    "birth_date": "1984-04-17",
+    "social_urls": [],
+    "skills": "",
+    "languages": "",
+    "resume_file": "resume_20250223145614_Mory_Gharasuie_resume25.pdf"
+}

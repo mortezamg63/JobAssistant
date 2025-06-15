@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Resume Section Editor</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      max-width: 800px; margin: 40px auto; color: #333; line-height: 1.5;
+    }
+    h1 { font-size: 2rem; margin-bottom: 1rem; }
+    #upload-area { margin-bottom: 2rem; }
+    #fileInput { display: block; margin-bottom: .5rem; }
+    button { cursor: pointer; }
+
+    /* Buttons */
+    #uploadBtn, #exportBtn {
+      padding: .5rem 1rem; font-size: 1rem;
+      border: 1px solid #888; background: #f7f7f7; border-radius: 4px;
+      margin-right: .5rem;
+    }
+    #uploadBtn:hover, #exportBtn:hover { background: #eee; }
+    #status { margin-top: .5rem; font-size: .9rem; color: #555; }
+
+    /* Main Sections */
+    .main-section {
+      border:1px solid #ccc; border-radius:6px; padding:1rem;
+      margin-bottom:1.5rem; background:#fafafa;
+    }
+    .main-section>h2 {
+      margin:0 0 1rem; font-size:1.5rem; font-weight:600;
+    }
+    .add-sub-btn {
+      display:inline-block; margin-bottom:1rem;
+      padding:.4rem .8rem; font-size:.9rem;
+      border:1px dashed #888; background:#fff; color:#555;
+      border-radius:4px;
+    }
+    .add-sub-btn:hover { background:#f9f9f9; }
+
+    /* Subsections */
+    .subsection {
+      border:1px solid #ddd; border-radius:4px;
+      padding:.75rem; margin-bottom:1rem; background:#fff;
+      position:relative;
+    }
+    .delete-btn {
+      position:absolute; top:8px; right:8px;
+      background:none; border:none; font-size:1rem;
+      color:#c33; cursor:pointer;
+    }
+    .delete-btn:hover { color:#800; }
+
+    /* Editable subtitle */
+    .subtitle-input {
+      width:100%; font-size:1.1rem; font-weight:500;
+      border:none; border-bottom:1px solid #ccc;
+      margin:0 0 .5rem; padding:.25rem 0;
+    }
+
+    /* Editor & Save */
+    .editor {
+      border:1px solid #ccc; border-radius:4px;
+      padding:.5rem; min-height:100px; background:#fff;
+      margin-bottom:.5rem;
+    }
+    .save-btn {
+      padding:.4rem .8rem; font-size:.9rem;
+      border:1px solid #888; background:#fff;
+      border-radius:4px;
+    }
+    .save-btn:hover { background:#f0f0f0; }
+
+    .editor ul { margin:.5rem 0 .5rem 1.25rem; }
+    .editor p  { margin:.5rem 0; }
+  </style>
+</head>
+<body>
+  <h1>Resume Section Editor</h1>
+
+  <div id="upload-area">
+    <input type="file" id="fileInput" accept=".pdf,.doc,.docx"/>
+    <button id="uploadBtn">Upload &amp; Parse</button>
+    <button id="exportBtn">Save as PDF</button>
+    <div id="status"></div>
+  </div>
+
+  <div id="sections"></div>
+
+  <script>
+    const fileInput   = document.getElementById('fileInput');
+    const uploadBtn   = document.getElementById('uploadBtn');
+    const exportBtn   = document.getElementById('exportBtn');
+    const statusDiv   = document.getElementById('status');
+    const sectionsDiv = document.getElementById('sections');
+
+    async function fetchSections() {
+      statusDiv.textContent = 'Loading…';
+      const res = await fetch('/sections');
+      const secs = await res.json();
+      statusDiv.textContent = `Loaded ${secs.length} items.`;
+      renderSections(secs);
+    }
+
+    function renderSections(sections) {
+      // group by main section
+      const byMain = {};
+      sections.forEach(s => {
+        (byMain[s.section] = byMain[s.section]||[]).push(s);
+      });
+
+      sectionsDiv.innerHTML = '';
+      Object.entries(byMain).forEach(([mainTitle, subs]) => {
+        const main = document.createElement('div');
+        main.className = 'main-section';
+        main.innerHTML = `<h2>${mainTitle}</h2>`;
+        // add-sub button
+        const add = document.createElement('button');
+        add.className='add-sub-btn';
+        add.textContent = '+ Add Subsection';
+        add.onclick = async () => {
+          const subtitle = prompt(`Subtitle for "${mainTitle}"?`);
+          if (!subtitle) return;
+          const payload = { section:mainTitle, subtitle, html:'' };
+          const r = await fetch('/sections',{ 
+            method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
+          });
+          if (r.ok) fetchSections();
+          else alert((await r.json()).error);
+        };
+        main.appendChild(add);
+
+        subs.forEach(sec=>{
+          const sub = document.createElement('div');
+          sub.className = 'subsection';
+          sub.dataset.id = sec.id;
+
+          // delete
+          const del = document.createElement('button');
+          del.className = 'delete-btn';
+          del.textContent = '🗑️';
+          del.onclick = async () => {
+            if (!confirm(`Delete "${sec.subtitle}"?`)) return;
+            const r = await fetch(`/sections/${sec.id}`,{method:'DELETE'});
+            if (r.ok) fetchSections();
+            else alert((await r.json()).error);
+          };
+          sub.appendChild(del);
+
+          // subtitle editable
+          const input = document.createElement('input');
+          input.className = 'subtitle-input';
+          input.value = sec.subtitle;
+          sub.appendChild(input);
+
+          // editor
+          const editor = document.createElement('div');
+          editor.className = 'editor';
+          editor.contentEditable = 'true';
+          editor.innerHTML = sec.html;
+          sub.appendChild(editor);
+
+          // save
+          const save = document.createElement('button');
+          save.className = 'save-btn';
+          save.textContent = 'Save';
+          save.onclick = async ()=>{
+            save.disabled = true;
+            const payload = {
+              subtitle: input.value.trim(),
+              html: editor.innerHTML
+            };
+            const r = await fetch(`/sections/${sec.id}`,{
+              method:'PUT', headers:{'Content-Type':'application/json'},
+              body: JSON.stringify(payload)
+            });
+            if (r.ok) alert('Saved!');
+            else alert((await r.json()).error);
+            save.disabled = false;
+          };
+          sub.appendChild(save);
+
+          main.appendChild(sub);
+        });
+
+        sectionsDiv.appendChild(main);
+      });
+    }
+
+    uploadBtn.onclick = async ()=>{
+      const file = fileInput.files[0];
+      if (!file) return alert('Select a file first.');
+      statusDiv.textContent = 'Uploading…';
+      const form = new FormData(); form.append('file',file);
+      const r = await fetch('/upload',{method:'POST',body:form});
+      if (r.ok){
+        const j = await r.json();
+        statusDiv.textContent = `Parsed ${j.sections.length} items.`;
+        renderSections(j.sections);
+      } else {
+        statusDiv.textContent = `Error: ${(await r.json()).error}`;
+      }
+    };
+
+    exportBtn.onclick = async ()=>{
+      // gather live DOM
+      const sections = [];
+      document.querySelectorAll('.subsection').forEach(sub=>{
+        const id = +sub.dataset.id;
+        const section = sub.closest('.main-section').querySelector('h2').textContent;
+        const subtitle = sub.querySelector('.subtitle-input').value;
+        const html = sub.querySelector('.editor').innerHTML;
+        sections.push({section,subtitle,html});
+      });
+      statusDiv.textContent = 'Generating PDF…';
+      const r = await fetch('/export',{ 
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({sections})
+      });
+      if (!r.ok){
+        statusDiv.textContent = `Error: ${(await r.json()).error}`;
+        return;
+      }
+      const blob = await r.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url; a.download='resume.pdf'; a.click();
+      URL.revokeObjectURL(url);
+      statusDiv.textContent = 'PDF ready!';
+    };
+
+    window.addEventListener('DOMContentLoaded', fetchSections);
+  </script>
+</body>
+</html>

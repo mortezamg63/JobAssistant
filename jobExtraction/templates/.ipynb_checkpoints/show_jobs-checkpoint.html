@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Listings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      background: #0b1c2f;
+      font-family: 'Segoe UI', sans-serif;
+      color: #f5e9d7;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .job-wrapper {
+      width: 100%;
+      max-width: 1100px;
+      background: #101e33;
+      border-radius: 24px;
+      padding: 36px;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.08);
+      border: 1.5px solid rgba(255, 215, 0, 0.25);
+    }
+
+    .job-header {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      text-align: center;
+      color: #f5e9d7;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid #425063;
+      background: #0f1a2a;
+      color: #f5e9d7;
+      font-size: 1rem;
+    }
+
+    input::placeholder {
+      color: #aaa;
+    }
+
+    button {
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #284466, #0c2a4d);
+      border: 1px solid #3c5774;
+      color: #f5e9d7;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #3d6b97, #163b5e);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #0d1827;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    thead {
+      background-color: #1a2a46;
+      color: #ffe082;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    tbody tr:hover {
+      background-color: #1f2d4a;
+    }
+
+    a {
+      color: #87cefa;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .text-muted {
+      color: #aaa;
+      padding-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="job-wrapper">
+    <div class="job-header">💼 Job Listings</div>
+
+    <form method="GET" action="{{ url_for('show_jobs') }}" class="input-group">
+      <input type="text" name="search" placeholder="Search for jobs..." value="{{ search_query }}" />
+      <button type="submit">Search</button>
+    </form>
+
+    {% if jobs %}
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Status</th>
+            <th>Title</th>
+            <th>Company</th>
+            <th>Location</th>
+            <th>Date</th>
+            <th>Wage</th>
+            <th>Remoteness</th>
+            <th>Link</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for job in jobs %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ job['status'] }}</td>
+              <td>{{ job['title'] }}</td>
+              <td>{{ job['company'] }}</td>
+              <td>{{ job['location'] }}</td>
+              <td>{{ job['date'] }}</td>
+              <td>{{ job['wage'] }}</td>
+              <td>{{ job['remoteness'] }}</td>
+              <td><a href="{{ job['link'] }}" target="_blank">View</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="text-muted">No jobs found.</p>
+    {% endif %}
+  </div>
+</body>
+</html>
