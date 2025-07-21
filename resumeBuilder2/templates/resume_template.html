@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ name }} Resume</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; font-size: 11pt; }
+        h1 { font-size: 24pt; margin-bottom: 0; }
+        h2 { font-size: 16pt; color: #2c3e50; margin-top: 30px; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+        h3 { font-size: 13pt; margin-bottom: 5px; }
+        .contact { margin: 10px 0; font-style: italic; }
+        ul { margin-top: 5px; margin-bottom: 15px; padding-left: 20px; }
+        li { margin-bottom: 4px; }
+        .section { margin-bottom: 20px; }
+        .inline-skills p { margin: 4px 0; }
+    </style>
+</head>
+<body>
+
+<!-- <h1>{{ name }}</h1>
+<p class="contact">{{ location }} | {{ email }} | {{ phone }}</p>
+<p class="contact">{{ linkedin }} | {{ github }}</p>
+
+<!-- Optional: debug output -->
+<!-- <pre>{{ sections | tojson(indent=2) }}</pre> -->
+
+{% for section in sections %}
+  <div class="section">
+    <h2>{{ section["section_name"] }}</h2>
+
+    {% for item in section["items"] %}
+      {% if section["section_name"]|lower == "technical skills" %}
+        <div class="inline-skills">
+          <p><strong>{{ item["title"] }}</strong>: {{ item["details"] | join(', ') }}</p>
+        </div>
+      {% else %}
+        <h3>{{ item["subtitle"] }}</h3>
+        <p><em>{{ item["title"] }}</em>
+        {% if item["start_date"] or item["end_date"] %}
+          | {{ item["start_date"] }} – {{ item["end_date"] }}
+        {% endif %}
+        </p>
+        {% if item["details"] %}
+          <ul>
+          {% for d in item["details"] %}
+            <li>{{ d }}</li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endfor %} 
+   
+
+
+</body>
+</html>

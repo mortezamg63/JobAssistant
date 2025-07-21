@@ -1,0 +1,25 @@
+generate_linkedin_profile_task:
+  description: >
+    Generate a well-formatted LinkedIn profile in Markdown format using the provided resume and target job title.
+  agent: linkedin_profile_coach
+  expected_output: >
+    markdown format that shows a   LinkedIn Profile Proposal inlinding
+    **Headline**: ...
+    **Summary**: ...
+    **Experience**:
+    ...
+    **Skills**: ...
+    ...
+  markdown: true
+
+validate_profile_schema_task:
+  description: >
+    Evaluate the Markdown LinkedIn profile for correctness, alignment with job role, and improve if necessary.
+  agent: profile_schema_validator
+  input: "{{generate_linkedin_profile.output}}"
+  expected_output: |
+    Suggested updates to improve role-fit, language quality, and strategic positioning of the profile content.
+  output_file: output_profile.md
+  context:
+    - generate_linkedin_profile_task
+  markdown: true

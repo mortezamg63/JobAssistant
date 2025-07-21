@@ -1,0 +1,353 @@
+{
+  "sections": [
+    {
+      "section_name": "Contact Information",
+      "items": [
+        {
+          "title": "Mory Gharasuie",
+          "subtitle": "Norfolk, VA, USA",
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "mmoha014@odu.edu",
+            "+1 757 287 1602",
+            "https://www.linkedin.com/in/mory-gharasui-53415258/",
+            "https://github.com/mortezamg63"
+          ],
+          "extra": null
+        }
+      ]
+    },
+    {
+      "section_name": "Technical Skills",
+      "items": [
+        {
+          "title": "Languages & Databases",
+          "subtitle": null,
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "Python",
+            "Java",
+            "C++",
+            "ASP Webform",
+            "C#",
+            "SQL",
+            "MySQL",
+            "HTML"
+          ],
+          "extra": null
+        },
+        {
+          "title": "Libraries",
+          "subtitle": null,
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "Tensorflow",
+            "Keras",
+            "PyTorch",
+            "OpenCV",
+            "Scikit-learn",
+            "NLP toolkit",
+            "HuggingFace",
+            "Pandas",
+            "Matplotlib",
+            "Seaborn",
+            "LangChain",
+            "Dask",
+            "BeautifulSoup"
+          ],
+          "extra": null
+        },
+        {
+          "title": "Development Tools",
+          "subtitle": null,
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "Anaconda",
+            "Jupyter Notebook",
+            "Google Colab",
+            "Visual Studio",
+            "Git",
+            "Docker",
+            "AWS"
+          ],
+          "extra": null
+        },
+        {
+          "title": "Operating Systems",
+          "subtitle": null,
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "Windows",
+            "Linux",
+            "Mac OS X"
+          ],
+          "extra": null
+        }
+      ]
+    },
+    {
+      "section_name": "Certifications",
+      "items": [
+        {
+          "title": "LanGraph",
+          "subtitle": null,
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "Link"
+          ],
+          "extra": null
+        },
+        {
+          "title": "LLM Engineering",
+          "subtitle": null,
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "Link"
+          ],
+          "extra": null
+        },
+        {
+          "title": "AWS SageMaker",
+          "subtitle": null,
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "Link"
+          ],
+          "extra": null
+        }
+      ]
+    },
+    {
+      "section_name": "Awards and Honors",
+      "items": [
+        {
+          "title": "Best Teaching Assistant",
+          "subtitle": null,
+          "start_date": "Spring 2025",
+          "end_date": null,
+          "details": [],
+          "extra": null
+        }
+      ]
+    },
+    {
+      "section_name": "Experience",
+      "items": [
+        {
+          "title": "Software Developer",
+          "subtitle": "Royan Communication Company | Qom, Iran",
+          "start_date": "2013",
+          "end_date": "2019",
+          "details": [
+            "Developed websites for small and medium-sized enterprises.",
+            "Customized web-based administration interfaces for applications on Linux server machines (such as chat server, FreeRadius server, and Elastix).",
+            "Enhanced the panels with support for multiple languages and designing them to be more intuitive and user-friendly, tailored to meet the specific needs and preferences of the customers."
+          ],
+          "extra": null
+        },
+        {
+          "title": "Research Assistantship",
+          "subtitle": "Old Dominion University | Norfolk, USA",
+          "start_date": "Aug 2019",
+          "end_date": "Present",
+          "details": [
+            "Developed applications for mobile and serverless domains using ML, DL, and CV.",
+            "Doing research on improving the performance of ML and DL models on classification problems for tabular data in semi-supervised settings.",
+            "Research on mitigating the impact of bias in imbalanced data in training ML and DL models in Image and tabular domains."
+          ],
+          "extra": null
+        },
+        {
+          "title": "Teaching Assistantship",
+          "subtitle": "Old Dominion University | Norfolk, USA",
+          "start_date": "Aug 2019",
+          "end_date": "Present",
+          "details": [
+            "Programming with C/C++ and Java (CS150, CS250, CS251)",
+            "Teaching Labs and recitations",
+            "Assignment Development",
+            "Grading"
+          ],
+          "extra": null
+        },
+        {
+          "title": "Medical Aid",
+          "subtitle": "Norfolk, USA",
+          "start_date": "Summer 2024",
+          "end_date": null,
+          "details": [
+            "Collaboration in Developing a chatBot utilizing Large Language Models (LLMs) and Retrieval-Augmented Generation.",
+            "Medical data extraction with reference to papers or resources.",
+            "Presentation of results based on the standard medical format.",
+            "Providing relevant questions or considerations from recent papers for better diagnosis."
+          ],
+          "extra": null
+        }
+      ]
+    },
+    {
+      "section_name": "Education",
+      "items": [
+        {
+          "title": "Old Dominion University",
+          "subtitle": "Norfolk, USA",
+          "start_date": "Aug 2019",
+          "end_date": "Present",
+          "details": [
+            "Research Interests: Machine Learning (ML), Computer Vision (CV), Natural Language Processing (NLP), Semi-supervised Learning (SSL), Tabular Data Processing",
+            "GPA: 3.84/4.0"
+          ],
+          "extra": null
+        },
+        {
+          "title": "Master of Science in Computer Engineering",
+          "subtitle": "University of NabiAkram | Tabriz, Iran",
+          "start_date": null,
+          "end_date": null,
+          "details": [],
+          "extra": null
+        },
+        {
+          "title": "Bachelor of Science in Computer Engineering",
+          "subtitle": "University of Shamsipoor | Tehran, Iran",
+          "start_date": null,
+          "end_date": null,
+          "details": [],
+          "extra": null
+        }
+      ]
+    },
+    {
+      "section_name": "Projects",
+      "items": [
+        {
+          "title": "Data Science and Machine Learning Projects",
+          "subtitle": "Tensorflow, PyTorch, TorchVision, OpenCV",
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "Created and managed a repository featuring data science and machine learning projects (supervised and unsupervised learning). These projects involve working with various datasets and machine learning algorithms from traditional to STOA.",
+            "Data preprocessing and curation",
+            "Exploring data analysis (EDA)",
+            "Feature engineering and selection",
+            "Machine learning development and evaluation",
+            "Data visualization and interpretation"
+          ],
+          "extra": null
+        },
+        {
+          "title": "Pricer (Agentic LLM)",
+          "subtitle": "HuggingFace, Pytorch, LangChain, Chormadb, BeautifulSoup, Scikit-learn",
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "An autonomous price estimation framework using LLMs (GPT-4o, Claude, Llama 3.1-8B) and traditional ML models (Random Forest, SVM, Word2Vec).",
+            "GPT-4o-mini's performance (average price difference) with RAG, improves from 80.9 to 55.57.",
+            "Fine-tuned Llama3.1-8B and achieved 46.67 average error.",
+            "Developed an agent that creates an ensemble model combining RAG+GPT-4o-mini, fine-tuned Llama, and Random Forest, achieving 54.62 error.",
+            "Used a Gradio-based UI and integrated Pushover API for real-time deal alerts from DealNews.Com."
+          ],
+          "extra": null
+        },
+        {
+          "title": "SAWTAB: Tabular Data and Semi-Supervised Learning (SSL)",
+          "subtitle": "Pytorch, Tensorflow, Tensorboard, Scikit-learn, Matplotlib, Seaborn",
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "Research focuses on two key challenges in machine learning for large-scale tabular and image datasets: class imbalance learning and semi-supervised learning.",
+            "Developed domain-specific architectures for tabular learning, including deep neural networks, autoencoders (AE, VAE), GANs, and Transformer-based models tailored for supervised, self-supervised, and semi-supervised settings.",
+            "Specialized in handling class imbalance in semi-supervised learning, particularly when labeled and unlabeled data follow different distributions, aiming to mitigate bias during model training.",
+            "Developed, fine-tuned, and pretrained models for downstream tasks in both semi-supervised and self-supervised settings, enabling robust and adaptable performance across a variety of real-world applications."
+          ],
+          "extra": null
+        },
+        {
+          "title": "Computer Vision Projects",
+          "subtitle": "Pytorch, Tensorflow, Scikit-learn, Matplotlib, Seaborn, OpenCV, Pose Estimation & Object detection frameworks",
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "Exercise Performance Monitoring: Developed a smartphone-based system that uses pose estimation to track movements during weight training. The system detects repetitions, analyzes range of motion, duration, and velocity, and assesses fatigue by tracking variations in rest times.",
+            "Hand Gesture Recognition: Designed a system to recognize numbers written in mid-air using Hidden Markov Models. Implemented motion tracking with Kalman filters, trajectory segmentation, background subtraction, and action recognition techniques.",
+            "Video Analytics System: Built an object detection and tracking pipeline for mobile edge cloud computing (MECC). Integrated detection and tracking into a unified framework with a graphical interface for real-time video processing."
+          ],
+          "extra": null
+        }
+      ]
+    },
+    {
+      "section_name": "Publications",
+      "items": [
+        {
+          "title": "LTBoost: Boosting Recall Uniformity in Long-Tailed Learning",
+          "subtitle": "CAIP2025",
+          "start_date": "July 2025",
+          "end_date": null,
+          "details": [
+            "Accepted"
+          ],
+          "extra": null
+        },
+        {
+          "title": "SAWTab: Smoothed Adaptive Weighting for Tabular Data in Semi-Supervised Learning",
+          "subtitle": "PAKDD 2024",
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "Link"
+          ],
+          "extra": null
+        },
+        {
+          "title": "Progressive Feature Upgrade in Semi-supervised Learning on Tabular Domain",
+          "subtitle": "ICKG 2022",
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "Link"
+          ],
+          "extra": null
+        },
+        {
+          "title": "Performance Monitoring for Exercise Movements using Mobile cameras",
+          "subtitle": "BodySys 2021",
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "Link"
+          ],
+          "extra": null
+        },
+        {
+          "title": "An efficient run-based method for connected component labeling",
+          "subtitle": "MVIP 2015",
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "Link"
+          ],
+          "extra": null
+        },
+        {
+          "title": "Real-time dynamic hand gesture recognition using hidden Markov models",
+          "subtitle": "MVIP 2013",
+          "start_date": null,
+          "end_date": null,
+          "details": [
+            "Link"
+          ],
+          "extra": null
+        }
+      ]
+    }
+  ]
+}

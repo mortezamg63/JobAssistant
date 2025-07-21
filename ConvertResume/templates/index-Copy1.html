@@ -377,22 +377,13 @@
         resumeBlocks.push(sub.querySelector('.editor').innerText);
       });
       const resumeText = resumeBlocks.join('\n');
-      const jobDesc = jobDescInput.value.trim();
-      // console.log('Resume Text:', resumeText);
-      // console.log('Job Description:', jobDesc);
-      // Check if job description or resume is empty
-      if (!jobDesc || !resumeText.trim()) {
-        alert('Please enter both the resume and job description before calculating similarity.');
-          console.log('Stop here, dont send request')
-        return; // Stop here, don't send request
-      }
 
       const res = await fetch('/similarity', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           resume: resumeText,
-          job_description: jobDesc//obDescInput.value
+          job_description: jobDescInput.value
         })
       });
       const data = await res.json();
@@ -524,15 +515,6 @@
         });
       });
       statusDiv.textContent = 'Generating PDF…';
-      const res = await fetch('/preview', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sections: secs })
-      });
-      const html = await res.text();
-      const popup = window.open('', '_blank');
-      popup.document.write(html);
-      popup.document.close();
       const r = await fetch('/export', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -542,7 +524,7 @@
       const blob = await r.blob();
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
-      a.href     = url; a.download = 'resume.docx'; a.click();
+      a.href     = url; a.download = 'resume.pdf'; a.click();
       URL.revokeObjectURL(url);
       statusDiv.textContent = 'PDF ready!';
     };

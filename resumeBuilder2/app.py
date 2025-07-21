@@ -4,9 +4,12 @@ from flask_cors import CORS
 import PyPDF2
 from docx import Document
 from weasyprint import HTML as PDFGen
-from pdf_parser import ResumeParser  # wherever you placed the class
+from pdf_parser import ResumeParser, ResumeParser_OpenAI  # wherever you placed the class
 import utils  # <-- import your util module
-
+from docx import Document
+from docx.shared import Pt
+import io
+from bs4 import BeautifulSoup
 app = Flask(__name__)
 CORS(app)
 
@@ -17,6 +20,7 @@ job_description_data = ""
 KNOWN_HEADINGS = ['Technical Skills','Experience','Education','Projects','Publications']
 # instantiate once
 parser = ResumeParser(known_headings=KNOWN_HEADINGS)
+parser2 = ResumeParser_OpenAI()
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
@@ -122,7 +126,7 @@ def parse_docx_lines(path):
 def index():
     return render_template('index.html')
 
-@app.route('/upload', methods=['POST'])
+# @app.route('/upload', methods=['POST'])
 # def upload():
 #     global sections_data, header_html
 #     f = request.files.get('file')
@@ -148,6 +152,7 @@ def index():
 #             secs.append({'id':cnt,'section':heading,'subtitle':subtitle,'html':section_html})
 #             cnt += 1
 #     sections_data = secs
+#     import pdb; pdb.set_trace()
 #     return jsonify({'sections': sections_data})
 
 
@@ -168,7 +173,7 @@ def upload():
     f.save(save_path)
 
     # delegate parsing
-    header_html, sections_data, resume_text = parser.parse(save_path)
+    header_html, sections_data, sections_pydantic, resume_text = parser2.parse(save_path)
 
     return jsonify({'sections': sections_data})
 
@@ -234,6 +239,9 @@ def similarity():
     payload = request.get_json() or {}
     resume_text = payload.get('resume', '')
     job_desc    = payload.get('job_description', '')
+    # import pdb; pdb.set_trace()
+    # print('job_desc: ', 'None' if (job_desc is None) or (job_desc is '') else job_desc)
+    
     hybrid, semantic, keyword = utils.hybrid_resume_job_match_score(resume_text, job_desc)
     return jsonify({
         'hybrid_score': hybrid,
@@ -253,5 +261,97 @@ def export_pdf():
     return Response(pdf, mimetype='application/pdf',
                     headers={'Content-Disposition':'attachment; filename=resume.pdf'})
 
+
+# @app.route('/export-docx', methods=['POST'])
+# @app.route('/export', methods=['POST'])
+# def export_docx():
+#     data = request.get_json() or {}
+#     sent = data.get('sections', [])
+
+#     # Group by section name
+#     by_main = {}
+#     for s in sent:
+#         by_main.setdefault(s['section'], []).append(s)
+
+#     # Create DOCX
+#     doc = Document()
+#     doc.styles['Normal'].font.name = 'Arial'
+#     doc.styles['Normal'].font.size = Pt(11)
+
+#     for section, entries in by_main.items():
+#         # Section title
+#         doc.add_heading(section, level=1)
+
+#         for entry in entries:
+#             subtitle = entry.get('subtitle', '')
+#             html_block = entry.get('html', '')
+
+#             # Add subtitle
+#             if subtitle:
+#                 doc.add_paragraph(subtitle, style='Intense Quote')
+
+#             # Naive HTML to text conversion (only <p> and <ul><li> handled)
+#             # lines = html_block.replace('</p>', '\n').replace('<p>', '').replace('</ul>', '').replace('<ul>', '').split('<li>')
+#             soup = BeautifulSoup(html_block, 'html.parser')
+#             text_lines = [line.strip() for line in soup.stripped_strings if line.strip()]
+#             for line in text_lines:
+#                 doc.add_paragraph(line, style='Normal')
+#             # for line in lines:
+#             #     clean = line.replace('</li>', '').strip()
+#             #     if clean:
+#             #         doc.add_paragraph(clean, style='List Bullet' if '<li>' in html_block else 'Normal')
+
+#     # Return as a response
+#     buffer = io.BytesIO()
+#     doc.save(buffer)
+#     buffer.seek(0)
+
+#     return Response(buffer.read(), mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+#                     headers={'Content-Disposition': 'attachment; filename=resume.docx'})
+
+
+@app.route("/preview", methods=["POST"])
+def preview_resume():
+    data = request.get_json()
+    raw_sections = data.get("sections", [])
+    # import pdb; pdb.set_trace()
+    # Convert flat format to structured format expected by the template
+    by_section = {}
+    for s in raw_sections:
+        section = s['section']
+        s['html'] = s['html'].replace('<li>','')
+        s['html'] = s['html'].replace('</li>','')
+        s['html'] = s['html'].replace('<p>','')
+        s['html'] = s['html'].replace('</p>','')
+        s['html'] = s['html'].replace('<ul>','')
+        s['html'] = s['html'].replace('</ul>','')
+        if section not in by_section:
+            by_section[section] = []
+        by_section[section].append({
+            'title': '',  # or extract from HTML if you wish
+            'subtitle': s.get('subtitle', ''),
+            'start_date': '',
+            'end_date': '',
+            'details': [line.strip() for line in s.get('html', '')
+                        .replace('</p>', '')
+                        .split('<p>') if line.strip()]
+        })
+
+    structured_sections = [
+        {'section_name': key, 'items': items}
+        for key, items in by_section.items()
+    ]
+
+    return render_template(
+        'resume_template.html',
+        name='Mory Gharasuie',
+        location='Norfolk, VA',
+        email='mory@example.com',
+        phone='123-456-7890',
+        linkedin='linkedin.com/in/mory',
+        github='github.com/mory',
+        sections=structured_sections  # ✅ fix here
+    )
+    
 if __name__=='__main__':
     app.run(debug=True)

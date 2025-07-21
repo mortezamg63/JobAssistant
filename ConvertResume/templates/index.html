@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Resume Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f6f8fa;
+      padding: 2rem;
+      color: #333;
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    form {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .section {
+      background-color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .item-title {
+      font-weight: bold;
+    }
+    ul {
+      padding-left: 1.5rem;
+    }
+    pre {
+      white-space: pre-wrap;
+      background-color: #eef1f5;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .filename {
+      text-align: center;
+      color: #555;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+    <script>
+        // Set up the fetch with a timeout (e.g., 2 minutes = 120000 ms)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 120000);
+        clearTimeout(timeoutId);
+    </script>
+<body>
+  <h1>Resume Viewer</h1>
+
+  <form method="POST" enctype="multipart/form-data" autocomplete="off">
+    <input type="file" name="resume" accept=".pdf,.docx" required>
+    <button type="submit">Upload</button>
+  </form>
+
+  {% if filename %}
+    <div class="filename"><strong>Uploaded:</strong> {{ filename }}</div>
+  {% endif %}
+
+  {% if raw_text %}
+    <div class="section">
+      <h2>Raw Resume Content</h2>
+      <pre>{{ raw_text }}</pre>
+    </div>
+  {% endif %}
+
+  {% if sections %}
+    <div class="section">
+      <h2>Structured Resume (Parsed)</h2>
+    </div>
+    {% for section in sections %}
+      <div class="section">
+        <h3>{{ section.section_name }}</h3>
+        {% for item in section.items %}
+          <p class="item-title">{{ item.title }}</p>
+          {% if item.subtitle %}
+            <p><em>{{ item.subtitle }}</em></p>
+          {% endif %}
+          {% if item.start_date or item.end_date %}
+            <p><small>{{ item.start_date }} - {{ item.end_date }}</small></p>
+          {% endif %}
+          {% if item.details %}
+            <ul>
+              {% for detail in item.details %}
+                <li>{{ detail }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+          <hr />
+        {% endfor %}
+      </div>
+    {% endfor %}
+  {% endif %}
+</body>
+</html>

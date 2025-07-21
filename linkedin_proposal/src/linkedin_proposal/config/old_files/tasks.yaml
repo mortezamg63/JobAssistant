@@ -1,0 +1,220 @@
+analyze_resume_json_task:
+  description: >
+    Review the provided resume JSON, extracting and interpreting key achievements, career progression, skills, education, and projects relevant for professional branding. here is the resume in json format: \n {resume_content}
+  inputs: >
+    - resume_json
+    - target_job_role
+  expected_outputs: >
+    provide an explanation and feedback that is useful for drafing the linkedin profile
+  steps: >
+    - Parse essential fields (summary, experience, skills, education, projects and so on).
+    - Identify standout accomplishments, quantifiable results, and leadership examples.
+    - Note gaps, missing data, or areas needing further detail.
+  agent: linkedin_profile_coach
+  
+
+draft_linkedin_profile_task:
+  description: >
+    Convert structured resume data into a compelling, professional LinkedIn profile in Markdown format, designed to attract recruiters for the user’s target role.
+  inputs: >
+    - extracted_profile_data
+    - target_job_role
+  expected_outputs: >
+    - linkedin profile in markdown format
+  markdown: true
+  steps: >
+    - Write a strong About section, stating professional identity and unique value proposition.
+    - For each experience, highlight impact and achievements in an engaging, concise manner.
+    - Curate hard/soft skills to match job trends and relevant keywords.
+    - Include sections for projects, publications, or certifications where appropriate.
+    - Humanize the profile with a brief note on work ethic, collaboration, or personal motivation.
+    - Apply any requested writing style, such as infusing subtle wit or concise business tone.
+    - Format the entire profile using clean, readable Markdown.
+  agent: linkedin_profile_coach
+  context: 
+    - analyze_resume_json_task
+  output_file: output/draft_profile.md
+
+# executive_profile_feedback_task:
+#   description: >
+#     Critically review the profile draft, simulating recruiter and hiring manager perspectives, and provide highly actionable feedback for improvement.
+#   inputs: >
+#     - linkedin_profile_markdown
+#     - target_job_role
+#     - extracted_profile_data
+#   expected_outputs: >
+#     - improvement_feedback
+#   steps: >
+#     - Check for clarity, quantifiable achievements, and narrative strength.
+#     - Ensure role alignment: Ensure the profile highlights relevant experience, skills, and keywords for the target job.
+#     - Spot improvement opportunities: Identify gaps, generic language, or missing impact statements.
+#     - Suggest improvements to headline, About section, or positioning for target industry.
+#     - Recommend ways to fill gaps if relevant.
+#     - Approve excellent profiles: When no improvement is needed, provide affirming feedback.
+#   agent: linkedin_profile_coach
+#   context:
+#     - draft_linkedin_profile_task
+#     - validate_profile_completeness_task
+#     - review_role_alignment_task
+#     - suggest_profile_improvements_task
+    - 
+    
+
+revise_profile_with_feedback_task:
+  description: >
+    Revise the LinkedIn profile draft based on internal feedback or stakeholder (e.g., validator agent) suggestions, raising the overall quality to meet professional benchmarks.
+  inputs: >
+    - linkedin_profile_markdown
+    - improvement_feedback
+  expected_outputs: >
+    A revised version of linkedin profile markdown
+  steps: >
+    - Address all suggested changes and critique.
+    - Enhance storytelling, conciseness, and professionalism.
+    - Highlight additional strengths or clarifications based on feedback.
+    - Submit the improved version for final review or validation.
+  agent: linkedin_profile_coach
+  context:
+    - draft_linkedin_profile_task
+    - validate_profile_completeness_task
+    - review_role_alignment_task
+    - suggest_profile_improvements_task
+    
+    
+
+#*********************************************************************************************
+validate_profile_completeness_task:
+    description: >
+      Assess the LinkedIn profile draft to ensure all critical sections and information are present and up-to-date.
+    inputs: >
+      - linkedin_profile_markdown
+      - target_job_role
+      - industry_benchmarks
+    expected_outputs: >
+      - completeness_report
+    steps: >
+      - Check for required sections: Headline, About, Experience, Skills, Education, Certifications, Projects.
+      - Ensure job titles, dates, and education info cover all major roles and qualifications.
+      - Review for up-to-date and relevant content matching the user's background.
+    agent: linkedin_profile_validator
+    context:
+      - draft_linkedin_profile_task
+      - revise_profile_with_feedback_task
+    
+      
+
+review_role_alignment_task:
+    description: >
+      Evaluate whether the profile effectively highlights achievements and skills most relevant to the targeted job or industry. 
+    inputs: >
+      - linkedin_profile_markdown
+      - target_job_role
+      - industry_benchmarks
+    expected_outputs: >
+      - alignment report
+    steps: >
+      - Analyze use of keywords tied to the target job/industry.
+      - Check for quantifiable results and impact in experience statements.
+      - Assess headline and About section for clarity, uniqueness, and keyword optimization.
+      - Identify any skill or experience gaps compared to industry standards.
+    agent: linkedin_profile_validator
+    context:
+      - draft_linkedin_profile_task
+      - revise_profile_with_feedback_task
+      
+     
+
+suggest_profile_improvements_task:
+    description: >
+      Identify opportunities to strengthen the LinkedIn profile draft and recommend clear, actionable enhancements or confirm readiness if profile is excellent. 
+    inputs: >
+      - linkedin_profile_markdown
+      - completeness_report
+      - alignment_report
+    expected_outputs: >
+      - validator_feedback
+      - approval_status
+    steps: >
+      - Highlight missing sections, vague language, or redundant content.
+      - Recommend specific edits (e.g., adding metrics, clarifying achievements, reordering skills).
+      - If the profile is professional and market-ready, provide brief positive affirmation (e.g., "Profile sounds great and needs no changes.").
+      - Ensure feedback is concise and actionable[3][5][11][8].
+    agent: linkedin_profile_validator
+    context:
+      - draft_linkedin_profile_task
+      - revise_profile_with_feedback_task
+      
+
+finalize_validation_task:
+    description: >
+      Record, communicate, and close the validation process, ensuring all necessary edits (if any) are clearly tracked and communicated to the workflow manager or coach agent. 
+    inputs: >
+      - validator_feedback
+      - approval_status
+      - revised_linkedin_profile_markdown (if applicable)
+    expected_outputs: >
+      - validation_result
+    steps: >
+      - Document final approval or required changes.
+      - Communicate validation result to flow manager for process continuation or completion.
+    agent: linkedin_profile_validator
+    context:
+      - draft_linkedin_profile_task
+      - revise_profile_with_feedback_task
+      - validate_profile_completeness_task
+      - review_role_alignment_task
+      - suggest_profile_improvements_task
+
+#************************************************************************************************************************************
+orchestrate_profile_creation_task:
+  description: >
+    Coordinates the end-to-end LinkedIn profile creation process: triggering the coach to analyze the resume, draft the profile, and passing the result to the validator for review.
+  inputs: >
+    - resume_json
+    - target_job_role
+    - industry_benchmarks
+  expected_outputs: >
+    - linkedin_profile_markdown
+    - initial_validation_feedback
+    - approval_status
+  steps: >
+    - Send the resume JSON and target role to coach for analysis and drafting.
+    - Receive the draft profile in Markdown.
+    - Pass the draft with context to validation agent for completeness and alignment checks.
+    - Collect validator feedback and approval status.
+  agent: linkedin_profile_flow_manager
+
+handle_revision_cycle_task:
+  description: >
+    Handles revision workflow: if the validator’s feedback does not approve the profile, sends the draft and feedback to the coach for revision, repeating as necessary.
+  inputs: >
+    - linkedin_profile_markdown
+    - validator_feedback
+    - approval_status
+  expected_outputs: >
+    - revised_linkedin_profile_markdown
+    - revision_feedback
+    - final_approval_status
+  steps: >
+    - If approval_status is not approved, forward the draft and feedback to the coach.
+    - Receive revised draft from coach.
+    - Return the revised profile for revalidation.
+    - Repeat until approval_status is granted or threshold on revisions is reached.
+  agent: linkedin_profile_flow_manager
+  context:
+    linkedin_profile_markdown: ${tasks.orchestrate_profile_creation_task.outputs.linkedin_profile_markdown}
+    validator_feedback: ${tasks.orchestrate_profile_creation_task.outputs.initial_validation_feedback}
+    approval_status: ${tasks.orchestrate_profile_creation_task.outputs.approval_status}
+
+finalize_profile_workflow_task:
+  description: >
+    Finalizes and documents the LinkedIn profile creation process, reporting the approved profile or escalation as necessary.
+  inputs: >
+    - revised_linkedin_profile_markdown
+    - final_approval_status
+  expected_outputs: >
+    - final linkedin profile markdown
+    - process_summary
+  steps: >
+    - Upon approval, document and export the final LinkedIn profile.
+  output_file: output/final_profile.md
